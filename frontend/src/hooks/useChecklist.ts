@@ -12,6 +12,7 @@ export interface ChecklistFilters {
     level: 'all' | 1 | 2 | 3;
     category: string | null;
     status: 'all' | 'selected' | 'unselected';
+    role: string | null;
     search: string;
 }
 
@@ -33,6 +34,7 @@ export function useChecklist(sessionId: string | null) {
             level: 'all',
             category: null,
             status: 'all',
+            role: null,
             search: '',
         },
         isLoading: false,
@@ -158,6 +160,13 @@ function getFilteredRequirements(
         // Category filter
         if (filters.category && req.category !== filters.category) {
             return false;
+        }
+
+        // Role filter
+        if (filters.role && filters.role !== 'all') {
+            if (!req.tags || !req.tags.includes(filters.role)) {
+                return false;
+            }
         }
 
         // Status filter

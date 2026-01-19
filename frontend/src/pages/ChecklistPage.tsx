@@ -147,6 +147,19 @@ export function ChecklistPage() {
                     <option value="unselected">Unselected</option>
                 </select>
 
+                {/* Role Filter */}
+                <select
+                    value={filters.role ?? ''}
+                    onChange={(e) => setFilter('role', e.target.value || null)}
+                    className="h-10 px-3 rounded-md border border-input bg-background text-sm"
+                >
+                    <option value="">All Roles</option>
+                    <option value="Architect">Architect</option>
+                    <option value="Developer">Developer</option>
+                    <option value="DevOps">DevOps</option>
+                    <option value="Security Champion">Security Champion</option>
+                </select>
+
                 {/* Standard Filter */}
                 <select
                     value={filters.standard}
@@ -264,6 +277,11 @@ export function ChecklistPage() {
                                             {req.standard}
                                         </Badge>
                                         <Badge variant="outline" className="text-[10px] px-1.5 h-5">L{req.level}</Badge>
+                                        {req.tags?.map(tag => (
+                                            <Badge key={tag} variant="secondary" className="text-[10px] px-1.5 h-5 bg-muted text-muted-foreground border-border">
+                                                {tag}
+                                            </Badge>
+                                        ))}
                                     </div>
                                     <Checkbox
                                         checked={selectedIds.has(req.requirementId)}
