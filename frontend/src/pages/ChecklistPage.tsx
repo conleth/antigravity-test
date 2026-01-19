@@ -8,6 +8,8 @@ import {
     Shield,
     AlertCircle,
     CheckCircle2,
+    ChevronDown,
+    ChevronRight,
 } from 'lucide-react';
 import { useChecklist } from '@/hooks/useChecklist';
 import { Button } from '@/components/ui/button';
@@ -51,6 +53,13 @@ export function ChecklistPage() {
         export: doExport,
     } = useChecklist(sessionId);
 
+    // Filter requirements for sections
+    // Note: filteredRequirements is already filtered by the active filters
+    const asvsReqs = filteredRequirements ? filteredRequirements.filter(r => r.standard === 'ASVS') : [];
+    const spvsReqs = filteredRequirements ? filteredRequirements.filter(r => r.standard === 'SPVS') : [];
+
+    const [openSections, setOpenSections] = useState({ asvs: true, spvs: true });
+
     if (!sessionId) {
         return null;
     }
@@ -81,9 +90,6 @@ export function ChecklistPage() {
         return null;
     }
 
-    const asvsCount = filteredRequirements.filter(r => r.standard === 'ASVS').length;
-    const spvsCount = filteredRequirements.filter(r => r.standard === 'SPVS').length;
-
     return (
         <div className="space-y-6 animate-fade-in">
             {/* Summary Cards */}
@@ -98,7 +104,7 @@ export function ChecklistPage() {
                     <CardHeader className="pb-2">
                         <CardDescription>ASVS (Visible)</CardDescription>
                         <CardTitle className="text-3xl text-blue-400">
-                            {asvsCount}
+                            {asvsReqs.length}
                         </CardTitle>
                     </CardHeader>
                 </Card>
@@ -106,7 +112,7 @@ export function ChecklistPage() {
                     <CardHeader className="pb-2">
                         <CardDescription>SPVS (Visible)</CardDescription>
                         <CardTitle className="text-3xl text-green-400">
-                            {spvsCount}
+                            {spvsReqs.length}
                         </CardTitle>
                     </CardHeader>
                 </Card>
@@ -258,77 +264,141 @@ export function ChecklistPage() {
             </div>
 
             {/* Requirements List */}
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-                {filteredRequirements.length === 0 ? (
-                    <Card className="col-span-1 md:col-span-5">
+            <div className="space-y-6">
+                {/* ASVS Section */}
+                {asvsReqs.length > 0 && (
+                    <div className="space-y-3">
+                        <button
+                            onClick={() => setOpenSections(s => ({ ...s, asvs: !s.asvs }))}
+                            className="flex items-center gap-2 text-lg font-semibold w-full text-left hover:text-primary transition-colors"
+                        >
+                            {openSections.asvs ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                            ASVS Requirements
+                            <Badge variant="secondary" className="ml-2">{asvsReqs.length}</Badge>
+                        </button>
+
+                        {openSections.asvs && (
+                            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 animate-slide-up">
+                                {asvsReqs.map((req) => (
+                                    <RequirementCard
+                                        key={req.requirementId}
+                                        req={req}
+                                        isSelected={selectedIds.has(req.requirementId)}
+                                        onToggle={() => toggleSelection(req.requirementId)}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* SPVS Section */}
+                {spvsReqs.length > 0 && (
+                    <div className="space-y-3">
+                        <button
+                            onClick={() => setOpenSections(s => ({ ...s, spvs: !s.spvs }))}
+                            className="flex items-center gap-2 text-lg font-semibold w-full text-left hover:text-primary transition-colors"
+                        >
+                            {openSections.spvs ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                            SPVS Requirements
+                            <Badge variant="secondary" className="ml-2">{spvsReqs.length}</Badge>
+                        </button>
+
+                        {openSections.spvs && (
+                            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 animate-slide-up">
+                                {spvsReqs.map((req) => (
+                                    <RequirementCard
+                                        key={req.requirementId}
+                                        req={req}
+                                        isSelected={selectedIds.has(req.requirementId)}
+                                        onToggle={() => toggleSelection(req.requirementId)}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {filteredRequirements.length === 0 && (
+                    <Card>
                         <CardContent className="py-8 text-center text-muted-foreground">
                             <Filter className="h-12 w-12 mx-auto mb-4 opacity-50" />
                             <p>No requirements match your filters.</p>
                         </CardContent>
                     </Card>
-                ) : (
-                    filteredRequirements.map((req) => (
-                        <Card
-                            key={req.requirementId}
-                            className={cn(
-                                'transition-colors h-full flex flex-col',
-                                selectedIds.has(req.requirementId) && 'border-primary'
-                            )}
-                        >
-                            <CardContent className="p-4 flex flex-col h-full gap-2">
-                                <div className="flex items-start justify-between gap-2">
-                                    <div className="flex items-center gap-2 flex-wrap">
-                                        <Badge
-                                            variant={req.standard === 'ASVS' ? 'default' : 'secondary'}
-                                            className="text-[10px] px-1.5 h-5"
-                                        >
-                                            {req.standard}
-                                        </Badge>
-                                        <Badge variant="outline" className="text-[10px] px-1.5 h-5">L{req.level}</Badge>
-                                        {req.tags?.map(tag => (
-                                            <Badge key={tag} variant="secondary" className="text-[10px] px-1.5 h-5 bg-muted text-muted-foreground border-border">
-                                                {tag}
-                                            </Badge>
-                                        ))}
-                                    </div>
-                                    <Checkbox
-                                        checked={selectedIds.has(req.requirementId)}
-                                        onCheckedChange={() => toggleSelection(req.requirementId)}
-                                        className="mt-0.5"
-                                    />
-                                </div>
-
-                                <code className="text-[10px] text-muted-foreground font-mono bg-muted px-1 rounded w-fit">
-                                    {req.requirementId}
-                                </code>
-
-                                <p className="text-xs line-clamp-4 flex-1" title={req.description}>{req.description}</p>
-
-                                <div className="mt-auto pt-2 space-y-2">
-                                    <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                                        <Shield className="h-3 w-3" />
-                                        <span className="truncate" title={req.category}>{req.category}</span>
-                                    </div>
-
-                                    {req.rationale && (
-                                        <div className="flex items-start gap-1 p-1.5 rounded-md bg-muted/50 text-[10px]">
-                                            <CheckCircle2 className="h-3 w-3 mt-0.5 text-primary shrink-0" />
-                                            <span className="text-muted-foreground line-clamp-2" title={req.rationale}>
-                                                {req.rationale}
-                                            </span>
-                                        </div>
-                                    )}
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))
                 )}
             </div>
 
             {/* Results Count */}
-            <div className="text-center text-sm text-muted-foreground">
+            <div className="text-center text-sm text-muted-foreground pt-4">
                 Showing {filteredRequirements.length} of {data.included.length} requirements
             </div>
         </div>
+    );
+}
+
+// Extracted Requirement Card component for reusability
+function RequirementCard({
+    req,
+    isSelected,
+    onToggle,
+}: {
+    req: any;
+    isSelected: boolean;
+    onToggle: () => void;
+}) {
+    return (
+        <Card
+            className={cn(
+                'transition-colors h-full flex flex-col',
+                isSelected && 'border-primary'
+            )}
+        >
+            <CardContent className="p-4 flex flex-col h-full gap-2">
+                <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <Badge
+                            variant={req.standard === 'ASVS' ? 'default' : 'secondary'}
+                            className="text-[10px] px-1.5 h-5"
+                        >
+                            {req.standard}
+                        </Badge>
+                        <Badge variant="outline" className="text-[10px] px-1.5 h-5">L{req.level}</Badge>
+                        {req.tags?.map((tag: string) => (
+                            <Badge key={tag} variant="secondary" className="text-[10px] px-1.5 h-5 bg-muted text-muted-foreground border-border">
+                                {tag}
+                            </Badge>
+                        ))}
+                    </div>
+                    <Checkbox
+                        checked={isSelected}
+                        onCheckedChange={onToggle}
+                        className="mt-0.5"
+                    />
+                </div>
+
+                <code className="text-[10px] text-muted-foreground font-mono bg-muted px-1 rounded w-fit">
+                    {req.requirementId}
+                </code>
+
+                <p className="text-xs line-clamp-4 flex-1" title={req.description}>{req.description}</p>
+
+                <div className="mt-auto pt-2 space-y-2">
+                    <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                        <Shield className="h-3 w-3" />
+                        <span className="truncate" title={req.category}>{req.category}</span>
+                    </div>
+
+                    {req.rationale && (
+                        <div className="flex items-start gap-1 p-1.5 rounded-md bg-muted/50 text-[10px]">
+                            <CheckCircle2 className="h-3 w-3 mt-0.5 text-primary shrink-0" />
+                            <span className="text-muted-foreground line-clamp-2" title={req.rationale}>
+                                {req.rationale}
+                            </span>
+                        </div>
+                    )}
+                </div>
+            </CardContent>
+        </Card>
     );
 }
