@@ -1,0 +1,196 @@
+{
+    "version": "1.0.0",
+    "description": "Questionnaire questions for security requirements shortlisting",
+    "questions": [
+        {
+            "id": "app-type",
+            "text": "What type of application is this?",
+            "helpText": "Select the primary application type. This affects which security controls are most relevant.",
+            "type": "single-select",
+            "required": true,
+            "options": [
+                {
+                    "value": "web",
+                    "label": "Web Application",
+                    "description": "Browser-based application with UI"
+                },
+                {
+                    "value": "api",
+                    "label": "API Service",
+                    "description": "REST/GraphQL backend service"
+                },
+                {
+                    "value": "mobile",
+                    "label": "Mobile App",
+                    "description": "iOS or Android application"
+                },
+                {
+                    "value": "internal",
+                    "label": "Internal Tool",
+                    "description": "Internal-only utility or admin tool"
+                }
+            ],
+            "mapsTo": "appType",
+            "order": 1
+        },
+        {
+            "id": "auth-type",
+            "text": "What authentication method does the application use?",
+            "helpText": "Select the primary authentication mechanism.",
+            "type": "single-select",
+            "required": true,
+            "options": [
+                {
+                    "value": "none",
+                    "label": "None / Anonymous",
+                    "description": "No authentication required"
+                },
+                {
+                    "value": "session",
+                    "label": "Session-based",
+                    "description": "Traditional session cookies"
+                },
+                {
+                    "value": "oauth",
+                    "label": "OAuth 2.0 / OIDC",
+                    "description": "Token-based authentication"
+                },
+                {
+                    "value": "sso",
+                    "label": "Enterprise SSO",
+                    "description": "SAML, Okta, Azure AD, etc."
+                }
+            ],
+            "mapsTo": "authType",
+            "order": 2
+        },
+        {
+            "id": "data-sensitivity",
+            "text": "What is the highest data sensitivity level handled?",
+            "helpText": "Consider the most sensitive data the application processes, stores, or transmits.",
+            "type": "single-select",
+            "required": true,
+            "options": [
+                {
+                    "value": "public",
+                    "label": "Public",
+                    "description": "Non-sensitive, publicly available data"
+                },
+                {
+                    "value": "internal",
+                    "label": "Internal",
+                    "description": "Business data, not for public disclosure"
+                },
+                {
+                    "value": "confidential",
+                    "label": "Confidential",
+                    "description": "PII, financial data, trade secrets"
+                },
+                {
+                    "value": "regulated",
+                    "label": "Regulated",
+                    "description": "PCI-DSS, HIPAA, GDPR sensitive data"
+                }
+            ],
+            "mapsTo": "dataSensitivity",
+            "order": 3
+        },
+        {
+            "id": "internet-exposure",
+            "text": "What is the network exposure of this application?",
+            "helpText": "Consider how the application is accessed.",
+            "type": "single-select",
+            "required": true,
+            "options": [
+                {
+                    "value": "public",
+                    "label": "Public Internet",
+                    "description": "Accessible from the internet"
+                },
+                {
+                    "value": "private",
+                    "label": "Private Network Only",
+                    "description": "VPN or internal network only"
+                },
+                {
+                    "value": "mixed",
+                    "label": "Mixed",
+                    "description": "Some components public, some private"
+                }
+            ],
+            "mapsTo": "internetExposure",
+            "order": 4
+        },
+        {
+            "id": "hosting-model",
+            "text": "Where is the application hosted?",
+            "helpText": "Select the primary hosting environment.",
+            "type": "single-select",
+            "required": true,
+            "options": [
+                {
+                    "value": "onprem",
+                    "label": "On-Premises",
+                    "description": "Self-managed data center"
+                },
+                {
+                    "value": "cloud",
+                    "label": "Cloud",
+                    "description": "AWS, GCP, Azure, etc."
+                },
+                {
+                    "value": "hybrid",
+                    "label": "Hybrid",
+                    "description": "Mix of on-prem and cloud"
+                }
+            ],
+            "mapsTo": "hostingModel",
+            "order": 5
+        },
+        {
+            "id": "pipeline-ci",
+            "text": "Do you have automated CI/CD pipelines?",
+            "helpText": "Continuous integration and deployment automation",
+            "type": "boolean",
+            "required": true,
+            "mapsTo": "pipelineMaturity.hasCI",
+            "order": 6
+        },
+        {
+            "id": "pipeline-signing",
+            "text": "Are build artifacts cryptographically signed?",
+            "helpText": "Code signing, container image signing, etc.",
+            "type": "boolean",
+            "required": true,
+            "mapsTo": "pipelineMaturity.hasSignedArtifacts",
+            "order": 7
+        },
+        {
+            "id": "pipeline-secrets",
+            "text": "Do you have automated secret scanning?",
+            "helpText": "Tools that detect leaked credentials in code",
+            "type": "boolean",
+            "required": true,
+            "mapsTo": "pipelineMaturity.hasSecretScanning",
+            "order": 8
+        },
+        {
+            "id": "pipeline-iac",
+            "text": "Do you use Infrastructure as Code (IaC)?",
+            "helpText": "Terraform, CloudFormation, Pulumi, etc.",
+            "type": "boolean",
+            "required": true,
+            "mapsTo": "pipelineMaturity.hasIaC",
+            "order": 9
+        },
+        {
+            "id": "pipeline-sbom",
+            "text": "Do you generate Software Bill of Materials (SBOM)?",
+            "helpText": "CycloneDX, SPDX, or similar dependency tracking",
+            "type": "boolean",
+            "required": true,
+            "mapsTo": "pipelineMaturity.hasSBOM",
+            "order": 10
+        }
+    ]
+}

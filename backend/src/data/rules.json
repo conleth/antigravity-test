@@ -1,0 +1,412 @@
+{
+    "version": "1.0.0",
+    "description": "Declarative rules for shortlisting ASVS and SPVS requirements based on derived attributes",
+    "rules": [
+        {
+            "id": "baseline-all",
+            "description": "Include baseline Level 1 requirements for all applications",
+            "predicate": {
+                "type": "always"
+            },
+            "affectsStandard": "both",
+            "includes": {
+                "asvs": {
+                    "chapters": [
+                        "V1",
+                        "V2",
+                        "V3",
+                        "V4",
+                        "V5",
+                        "V6",
+                        "V7",
+                        "V8",
+                        "V9",
+                        "V10",
+                        "V11",
+                        "V12",
+                        "V13",
+                        "V14"
+                    ]
+                },
+                "spvs": {
+                    "chapters": [
+                        "V1",
+                        "V2",
+                        "V3",
+                        "V4",
+                        "V5"
+                    ]
+                }
+            },
+            "priority": 1
+        },
+        {
+            "id": "level-filter",
+            "description": "Filter requirements by recommended security level",
+            "predicate": {
+                "type": "level",
+                "maxLevel": 3
+            },
+            "affectsStandard": "both",
+            "priority": 100
+        },
+        {
+            "id": "auth-session-management",
+            "description": "Include session management requirements for session-based auth",
+            "predicate": {
+                "type": "attribute",
+                "field": "authType",
+                "operator": "equals",
+                "value": "session"
+            },
+            "affectsStandard": "ASVS",
+            "includes": {
+                "asvs": {
+                    "chapters": [
+                        "V3"
+                    ]
+                }
+            },
+            "priority": 10
+        },
+        {
+            "id": "auth-oauth-requirements",
+            "description": "Include OAuth/OIDC specific requirements",
+            "predicate": {
+                "type": "or",
+                "conditions": [
+                    {
+                        "type": "attribute",
+                        "field": "authType",
+                        "operator": "equals",
+                        "value": "oauth"
+                    },
+                    {
+                        "type": "attribute",
+                        "field": "authType",
+                        "operator": "equals",
+                        "value": "sso"
+                    }
+                ]
+            },
+            "affectsStandard": "ASVS",
+            "includes": {
+                "asvs": {
+                    "chapters": [
+                        "V2",
+                        "V3"
+                    ]
+                }
+            },
+            "priority": 10
+        },
+        {
+            "id": "no-auth-exclude-session",
+            "description": "Exclude session management for apps without authentication",
+            "predicate": {
+                "type": "attribute",
+                "field": "authType",
+                "operator": "equals",
+                "value": "none"
+            },
+            "affectsStandard": "ASVS",
+            "excludes": {
+                "asvs": {
+                    "chapters": [
+                        "V2",
+                        "V3"
+                    ]
+                }
+            },
+            "priority": 20
+        },
+        {
+            "id": "web-app-requirements",
+            "description": "Include web-specific security requirements",
+            "predicate": {
+                "type": "attribute",
+                "field": "appType",
+                "operator": "equals",
+                "value": "web"
+            },
+            "affectsStandard": "ASVS",
+            "includes": {
+                "asvs": {
+                    "chapters": [
+                        "V4",
+                        "V5",
+                        "V12",
+                        "V14"
+                    ]
+                }
+            },
+            "priority": 10
+        },
+        {
+            "id": "api-requirements",
+            "description": "Include API-specific security requirements",
+            "predicate": {
+                "type": "attribute",
+                "field": "appType",
+                "operator": "equals",
+                "value": "api"
+            },
+            "affectsStandard": "ASVS",
+            "includes": {
+                "asvs": {
+                    "chapters": [
+                        "V4",
+                        "V13"
+                    ]
+                }
+            },
+            "priority": 10
+        },
+        {
+            "id": "mobile-requirements",
+            "description": "Include mobile-specific security requirements",
+            "predicate": {
+                "type": "attribute",
+                "field": "appType",
+                "operator": "equals",
+                "value": "mobile"
+            },
+            "affectsStandard": "ASVS",
+            "includes": {
+                "asvs": {
+                    "chapters": [
+                        "V4",
+                        "V9"
+                    ]
+                }
+            },
+            "priority": 10
+        },
+        {
+            "id": "confidential-data-crypto",
+            "description": "Include cryptography requirements for confidential/regulated data",
+            "predicate": {
+                "type": "or",
+                "conditions": [
+                    {
+                        "type": "attribute",
+                        "field": "dataSensitivity",
+                        "operator": "equals",
+                        "value": "confidential"
+                    },
+                    {
+                        "type": "attribute",
+                        "field": "dataSensitivity",
+                        "operator": "equals",
+                        "value": "regulated"
+                    }
+                ]
+            },
+            "affectsStandard": "ASVS",
+            "includes": {
+                "asvs": {
+                    "chapters": [
+                        "V6"
+                    ]
+                }
+            },
+            "priority": 15
+        },
+        {
+            "id": "regulated-data-compliance",
+            "description": "Include all high-assurance requirements for regulated data",
+            "predicate": {
+                "type": "attribute",
+                "field": "dataSensitivity",
+                "operator": "equals",
+                "value": "regulated"
+            },
+            "affectsStandard": "both",
+            "includes": {
+                "asvs": {
+                    "chapters": [
+                        "V1",
+                        "V6",
+                        "V7",
+                        "V8",
+                        "V10"
+                    ]
+                },
+                "spvs": {
+                    "chapters": [
+                        "V1",
+                        "V2",
+                        "V3",
+                        "V4",
+                        "V5"
+                    ]
+                }
+            },
+            "priority": 20
+        },
+        {
+            "id": "public-exposure-hardening",
+            "description": "Include hardening requirements for internet-exposed applications",
+            "predicate": {
+                "type": "or",
+                "conditions": [
+                    {
+                        "type": "attribute",
+                        "field": "internetExposure",
+                        "operator": "equals",
+                        "value": "public"
+                    },
+                    {
+                        "type": "attribute",
+                        "field": "internetExposure",
+                        "operator": "equals",
+                        "value": "mixed"
+                    }
+                ]
+            },
+            "affectsStandard": "ASVS",
+            "includes": {
+                "asvs": {
+                    "chapters": [
+                        "V9",
+                        "V13",
+                        "V14"
+                    ]
+                }
+            },
+            "priority": 15
+        },
+        {
+            "id": "cloud-hosting-requirements",
+            "description": "Include cloud-specific security requirements",
+            "predicate": {
+                "type": "or",
+                "conditions": [
+                    {
+                        "type": "attribute",
+                        "field": "hostingModel",
+                        "operator": "equals",
+                        "value": "cloud"
+                    },
+                    {
+                        "type": "attribute",
+                        "field": "hostingModel",
+                        "operator": "equals",
+                        "value": "hybrid"
+                    }
+                ]
+            },
+            "affectsStandard": "ASVS",
+            "includes": {
+                "asvs": {
+                    "chapters": [
+                        "V1",
+                        "V14"
+                    ]
+                }
+            },
+            "priority": 10
+        },
+        {
+            "id": "pipeline-ci-requirements",
+            "description": "Include CI/CD pipeline security requirements when CI exists",
+            "predicate": {
+                "type": "pipelineAttribute",
+                "field": "hasCI",
+                "equals": true
+            },
+            "affectsStandard": "SPVS",
+            "includes": {
+                "spvs": {
+                    "chapters": [
+                        "V2",
+                        "V3",
+                        "V4"
+                    ]
+                }
+            },
+            "priority": 10
+        },
+        {
+            "id": "pipeline-no-ci-exclude",
+            "description": "Exclude advanced pipeline controls when no CI exists",
+            "predicate": {
+                "type": "pipelineAttribute",
+                "field": "hasCI",
+                "equals": false
+            },
+            "affectsStandard": "SPVS",
+            "excludes": {
+                "spvs": {
+                    "chapters": [
+                        "V3",
+                        "V4"
+                    ]
+                }
+            },
+            "priority": 5
+        },
+        {
+            "id": "pipeline-signing-requirements",
+            "description": "Include artifact signing requirements when signing is in place",
+            "predicate": {
+                "type": "pipelineAttribute",
+                "field": "hasSignedArtifacts",
+                "equals": true
+            },
+            "affectsStandard": "SPVS",
+            "priority": 10
+        },
+        {
+            "id": "pipeline-secrets-requirements",
+            "description": "Include secret management requirements when secret scanning exists",
+            "predicate": {
+                "type": "pipelineAttribute",
+                "field": "hasSecretScanning",
+                "equals": true
+            },
+            "affectsStandard": "SPVS",
+            "priority": 10
+        },
+        {
+            "id": "internal-tool-reduced",
+            "description": "Reduce requirements for internal-only tools",
+            "predicate": {
+                "type": "and",
+                "conditions": [
+                    {
+                        "type": "attribute",
+                        "field": "appType",
+                        "operator": "equals",
+                        "value": "internal"
+                    },
+                    {
+                        "type": "attribute",
+                        "field": "internetExposure",
+                        "operator": "equals",
+                        "value": "private"
+                    },
+                    {
+                        "type": "attribute",
+                        "field": "dataSensitivity",
+                        "operator": "in",
+                        "value": [
+                            "public",
+                            "internal"
+                        ]
+                    }
+                ]
+            },
+            "affectsStandard": "ASVS",
+            "excludes": {
+                "asvs": {
+                    "chapters": [
+                        "V9",
+                        "V13"
+                    ]
+                }
+            },
+            "priority": 5
+        }
+    ]
+}

@@ -1,0 +1,757 @@
+{
+    "version": "5.0.0",
+    "metadata": {
+        "name": "OWASP Application Security Verification Standard",
+        "source": "https://github.com/OWASP/ASVS",
+        "lastUpdated": "2025-05-01",
+        "totalRequirements": 345,
+        "note": "This is a representative subset. Full data should be synced from OWASP ASVS repository."
+    },
+    "chapters": [
+        {
+            "id": "V1",
+            "name": "Security Decision Documentation",
+            "description": "Documenting security-related architectural and design decisions",
+            "sections": [
+                {
+                    "id": "1.1",
+                    "name": "Security Hygiene",
+                    "requirements": [
+                        {
+                            "id": "1.1.1",
+                            "description": "Verify that the application development lifecycle includes a secure development lifecycle process covering design review, code review, and security testing.",
+                            "level": 1,
+                            "cwe": [
+                                "1053"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "1.1.2",
+                            "description": "Verify that changes to security-relevant configurations are auditable.",
+                            "level": 2,
+                            "cwe": [
+                                "778"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                },
+                {
+                    "id": "1.2",
+                    "name": "Component Security",
+                    "requirements": [
+                        {
+                            "id": "1.2.1",
+                            "description": "Verify that all components are kept up to date with proper version control and change management.",
+                            "level": 1,
+                            "cwe": [
+                                "1104"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "1.2.2",
+                            "description": "Verify that a Software Bill of Materials (SBOM) is maintained for all applications.",
+                            "level": 2,
+                            "cwe": [
+                                "1059"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "V2",
+            "name": "Authentication",
+            "description": "Authentication mechanism security requirements",
+            "sections": [
+                {
+                    "id": "2.1",
+                    "name": "Password Security",
+                    "requirements": [
+                        {
+                            "id": "2.1.1",
+                            "description": "Verify that user set passwords are at least 8 characters in length.",
+                            "level": 1,
+                            "cwe": [
+                                "521"
+                            ],
+                            "nist": [
+                                "5.1.1.1"
+                            ]
+                        },
+                        {
+                            "id": "2.1.2",
+                            "description": "Verify that passwords of at least 64 characters are permitted, and that passwords of more than 128 characters are denied.",
+                            "level": 1,
+                            "cwe": [
+                                "521"
+                            ],
+                            "nist": [
+                                "5.1.1.1"
+                            ]
+                        },
+                        {
+                            "id": "2.1.3",
+                            "description": "Verify that password truncation is not performed and that successive spaces are not coalesced.",
+                            "level": 1,
+                            "cwe": [
+                                "521"
+                            ],
+                            "nist": [
+                                "5.1.1.1"
+                            ]
+                        },
+                        {
+                            "id": "2.1.4",
+                            "description": "Verify that any printable Unicode character, including language neutral characters such as spaces and Emojis are permitted in passwords.",
+                            "level": 1,
+                            "cwe": [
+                                "521"
+                            ],
+                            "nist": [
+                                "5.1.1.1"
+                            ]
+                        },
+                        {
+                            "id": "2.1.5",
+                            "description": "Verify users can change their password.",
+                            "level": 1,
+                            "cwe": [
+                                "620"
+                            ],
+                            "nist": [
+                                "5.1.1.1"
+                            ]
+                        },
+                        {
+                            "id": "2.1.6",
+                            "description": "Verify that password change functionality requires the user's current and new password.",
+                            "level": 1,
+                            "cwe": [
+                                "620"
+                            ],
+                            "nist": [
+                                "5.1.1.1"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "2.2",
+                    "name": "General Authenticator Security",
+                    "requirements": [
+                        {
+                            "id": "2.2.1",
+                            "description": "Verify that anti-automation controls are effective at mitigating breached credential testing, brute force, and account lockout attacks.",
+                            "level": 1,
+                            "cwe": [
+                                "307"
+                            ],
+                            "nist": [
+                                "5.2.2"
+                            ]
+                        },
+                        {
+                            "id": "2.2.2",
+                            "description": "Verify that the use of weak authenticators (such as SMS and email) is limited to secondary verification and transaction approval.",
+                            "level": 2,
+                            "cwe": [
+                                "304"
+                            ],
+                            "nist": [
+                                "5.1.3.2"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "2.3",
+                    "name": "Authenticator Lifecycle",
+                    "requirements": [
+                        {
+                            "id": "2.3.1",
+                            "description": "Verify system generated initial passwords or activation codes are securely randomly generated and expire after a short period.",
+                            "level": 1,
+                            "cwe": [
+                                "330"
+                            ],
+                            "nist": [
+                                "5.1.1.1"
+                            ]
+                        },
+                        {
+                            "id": "2.3.2",
+                            "description": "Verify that enrollment and use of user-provided authentication devices are supported, such as U2F or FIDO tokens.",
+                            "level": 3,
+                            "cwe": [
+                                "308"
+                            ],
+                            "nist": [
+                                "6.1.1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "V3",
+            "name": "Session Management",
+            "description": "Session token and state management requirements",
+            "sections": [
+                {
+                    "id": "3.1",
+                    "name": "Session Token Security",
+                    "requirements": [
+                        {
+                            "id": "3.1.1",
+                            "description": "Verify the application never reveals session tokens in URL parameters.",
+                            "level": 1,
+                            "cwe": [
+                                "598"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "3.1.2",
+                            "description": "Verify the application generates a new session token on user authentication.",
+                            "level": 1,
+                            "cwe": [
+                                "384"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                },
+                {
+                    "id": "3.2",
+                    "name": "Session Binding",
+                    "requirements": [
+                        {
+                            "id": "3.2.1",
+                            "description": "Verify the application generates a new session or reauthenticates when performing privileged operations.",
+                            "level": 1,
+                            "cwe": [
+                                "384"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "3.2.2",
+                            "description": "Verify that session tokens possess at least 128 bits of entropy.",
+                            "level": 1,
+                            "cwe": [
+                                "331"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                },
+                {
+                    "id": "3.3",
+                    "name": "Session Termination",
+                    "requirements": [
+                        {
+                            "id": "3.3.1",
+                            "description": "Verify that logout and expiration invalidate the session token.",
+                            "level": 1,
+                            "cwe": [
+                                "613"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "3.3.2",
+                            "description": "Verify that the application gives the option to terminate all other active sessions after a successful password change.",
+                            "level": 2,
+                            "cwe": [
+                                "613"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "V4",
+            "name": "Access Control",
+            "description": "Access control and authorization requirements",
+            "sections": [
+                {
+                    "id": "4.1",
+                    "name": "General Access Control",
+                    "requirements": [
+                        {
+                            "id": "4.1.1",
+                            "description": "Verify that the application enforces access control rules on a trusted service layer.",
+                            "level": 1,
+                            "cwe": [
+                                "602"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "4.1.2",
+                            "description": "Verify that all user and data attributes and policy information used by access controls cannot be manipulated by end users.",
+                            "level": 1,
+                            "cwe": [
+                                "639"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                },
+                {
+                    "id": "4.2",
+                    "name": "Operation Level Access Control",
+                    "requirements": [
+                        {
+                            "id": "4.2.1",
+                            "description": "Verify that sensitive data and APIs are protected against Insecure Direct Object Reference (IDOR) attacks.",
+                            "level": 1,
+                            "cwe": [
+                                "639"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "4.2.2",
+                            "description": "Verify that the application prevents access to functionality not authorized for the user's privilege level.",
+                            "level": 1,
+                            "cwe": [
+                                "285"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "V5",
+            "name": "Validation, Sanitization and Encoding",
+            "description": "Input validation and output encoding requirements",
+            "sections": [
+                {
+                    "id": "5.1",
+                    "name": "Input Validation",
+                    "requirements": [
+                        {
+                            "id": "5.1.1",
+                            "description": "Verify that the application has defenses against HTTP parameter pollution attacks.",
+                            "level": 1,
+                            "cwe": [
+                                "235"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "5.1.2",
+                            "description": "Verify that frameworks protect against mass parameter assignment attacks.",
+                            "level": 1,
+                            "cwe": [
+                                "915"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                },
+                {
+                    "id": "5.2",
+                    "name": "Sanitization and Sandboxing",
+                    "requirements": [
+                        {
+                            "id": "5.2.1",
+                            "description": "Verify that all untrusted HTML input from WYSIWYG editors or similar is properly sanitized with an HTML sanitizer library.",
+                            "level": 1,
+                            "cwe": [
+                                "116"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "5.2.2",
+                            "description": "Verify that unstructured data is sanitized to enforce safety measures such as allowed characters and length.",
+                            "level": 1,
+                            "cwe": [
+                                "138"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "V6",
+            "name": "Stored Cryptography",
+            "description": "Cryptography requirements for data at rest",
+            "sections": [
+                {
+                    "id": "6.1",
+                    "name": "Data Classification",
+                    "requirements": [
+                        {
+                            "id": "6.1.1",
+                            "description": "Verify that regulated private data is stored encrypted while at rest.",
+                            "level": 2,
+                            "cwe": [
+                                "311"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "6.1.2",
+                            "description": "Verify that regulated health data is stored encrypted while at rest with proper key management.",
+                            "level": 2,
+                            "cwe": [
+                                "311"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                },
+                {
+                    "id": "6.2",
+                    "name": "Algorithms",
+                    "requirements": [
+                        {
+                            "id": "6.2.1",
+                            "description": "Verify that all cryptographic modules fail securely, and errors are handled to avoid Padding Oracle attacks.",
+                            "level": 1,
+                            "cwe": [
+                                "310"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "6.2.2",
+                            "description": "Verify that industry proven or government approved cryptographic algorithms, modes, and libraries are used.",
+                            "level": 2,
+                            "cwe": [
+                                "327"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "V7",
+            "name": "Error and Logging",
+            "description": "Error handling and security logging requirements",
+            "sections": [
+                {
+                    "id": "7.1",
+                    "name": "Log Content",
+                    "requirements": [
+                        {
+                            "id": "7.1.1",
+                            "description": "Verify that the application does not log credentials or payment details.",
+                            "level": 1,
+                            "cwe": [
+                                "532"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "7.1.2",
+                            "description": "Verify that the application does not log other sensitive data as defined under local privacy laws.",
+                            "level": 1,
+                            "cwe": [
+                                "532"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                },
+                {
+                    "id": "7.2",
+                    "name": "Log Processing",
+                    "requirements": [
+                        {
+                            "id": "7.2.1",
+                            "description": "Verify that all authentication decisions are logged, without storing sensitive session tokens or passwords.",
+                            "level": 2,
+                            "cwe": [
+                                "778"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "7.2.2",
+                            "description": "Verify that all access control decisions can be logged and all failed decisions are logged.",
+                            "level": 2,
+                            "cwe": [
+                                "285"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "V8",
+            "name": "Data Protection",
+            "description": "Data protection and privacy requirements",
+            "sections": [
+                {
+                    "id": "8.1",
+                    "name": "General Data Protection",
+                    "requirements": [
+                        {
+                            "id": "8.1.1",
+                            "description": "Verify that the application protects sensitive data from being cached in server components such as load balancers and application caches.",
+                            "level": 1,
+                            "cwe": [
+                                "524"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "8.1.2",
+                            "description": "Verify that all cached or temporary copies of sensitive data are protected from unauthorized access.",
+                            "level": 1,
+                            "cwe": [
+                                "524"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "V9",
+            "name": "Communications",
+            "description": "Communication security requirements",
+            "sections": [
+                {
+                    "id": "9.1",
+                    "name": "Client Communication Security",
+                    "requirements": [
+                        {
+                            "id": "9.1.1",
+                            "description": "Verify that TLS is used for all client connectivity, and does not fall back to insecure or unencrypted communications.",
+                            "level": 1,
+                            "cwe": [
+                                "319"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "9.1.2",
+                            "description": "Verify using up to date TLS testing tools that only strong cipher suites are enabled.",
+                            "level": 1,
+                            "cwe": [
+                                "326"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "V10",
+            "name": "Malicious Code",
+            "description": "Malicious code prevention requirements",
+            "sections": [
+                {
+                    "id": "10.1",
+                    "name": "Code Integrity",
+                    "requirements": [
+                        {
+                            "id": "10.1.1",
+                            "description": "Verify that a code analysis tool is in use that can detect potentially malicious code.",
+                            "level": 3,
+                            "cwe": [
+                                "749"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "V11",
+            "name": "Business Logic",
+            "description": "Business logic security requirements",
+            "sections": [
+                {
+                    "id": "11.1",
+                    "name": "Business Logic Security",
+                    "requirements": [
+                        {
+                            "id": "11.1.1",
+                            "description": "Verify that the application will only process business logic flows in sequential step order.",
+                            "level": 1,
+                            "cwe": [
+                                "841"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "11.1.2",
+                            "description": "Verify that the application will only process business logic flows with realistic human timing.",
+                            "level": 2,
+                            "cwe": [
+                                "779"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "V12",
+            "name": "Files and Resources",
+            "description": "File upload and resource handling requirements",
+            "sections": [
+                {
+                    "id": "12.1",
+                    "name": "File Upload",
+                    "requirements": [
+                        {
+                            "id": "12.1.1",
+                            "description": "Verify that the application will not accept large files that could fill up storage or cause a denial of service.",
+                            "level": 1,
+                            "cwe": [
+                                "400"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "12.1.2",
+                            "description": "Verify that file type is validated by checking the file content, not just the extension.",
+                            "level": 1,
+                            "cwe": [
+                                "434"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "V13",
+            "name": "API and Web Service",
+            "description": "API and web service security requirements",
+            "sections": [
+                {
+                    "id": "13.1",
+                    "name": "Generic Web Service Security",
+                    "requirements": [
+                        {
+                            "id": "13.1.1",
+                            "description": "Verify that all API responses contain a Content-Type header specifying the correct content type.",
+                            "level": 1,
+                            "cwe": [
+                                "116"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "13.1.2",
+                            "description": "Verify that API URLs do not expose sensitive information, such as API keys or session tokens.",
+                            "level": 1,
+                            "cwe": [
+                                "598"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                },
+                {
+                    "id": "13.2",
+                    "name": "RESTful Web Service",
+                    "requirements": [
+                        {
+                            "id": "13.2.1",
+                            "description": "Verify that RESTful web services that utilize cookies are protected from Cross-Site Request Forgery.",
+                            "level": 1,
+                            "cwe": [
+                                "352"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "13.2.2",
+                            "description": "Verify that the REST service is protected by rate limiting to prevent automated attacks.",
+                            "level": 2,
+                            "cwe": [
+                                "770"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "V14",
+            "name": "Configuration",
+            "description": "Secure configuration verification requirements",
+            "sections": [
+                {
+                    "id": "14.1",
+                    "name": "Build and Deploy",
+                    "requirements": [
+                        {
+                            "id": "14.1.1",
+                            "description": "Verify that the application build and deployment processes are performed in a secure and automated manner.",
+                            "level": 2,
+                            "cwe": [
+                                "1104"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "14.1.2",
+                            "description": "Verify that compiler flags are configured to enable all available buffer overflow protections.",
+                            "level": 2,
+                            "cwe": [
+                                "120"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                },
+                {
+                    "id": "14.2",
+                    "name": "Dependency",
+                    "requirements": [
+                        {
+                            "id": "14.2.1",
+                            "description": "Verify that all components are up to date, preferably using a dependency checker during build or compile time.",
+                            "level": 1,
+                            "cwe": [
+                                "1104"
+                            ],
+                            "nist": []
+                        },
+                        {
+                            "id": "14.2.2",
+                            "description": "Verify that all unneeded features, documentation, sample applications and configurations are removed.",
+                            "level": 1,
+                            "cwe": [
+                                "1002"
+                            ],
+                            "nist": []
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

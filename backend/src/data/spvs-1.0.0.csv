@@ -1,0 +1,70 @@
+req_id,category,subcategory,req_name,level,NIST,OWASP_CICD,CWE
+V1.1.1,Plan,Threat Assessment,Perform threat modeling for the software delivery pipeline,1,RA-3,CICD-SEC-1,
+V1.1.2,Plan,Threat Assessment,Document identified threats and attack vectors in the pipeline,1,RA-5,CICD-SEC-1,
+V1.1.3,Plan,Threat Assessment,Conduct periodic security risk assessments of the pipeline infrastructure,2,RA-3,CICD-SEC-1,
+V1.2.1,Plan,Security Requirements,Define security requirements for the CI/CD pipeline,1,PL-2,CICD-SEC-2,
+V1.2.2,Plan,Security Requirements,Establish security baselines for pipeline components,1,CM-2,CICD-SEC-2,
+V1.2.3,Plan,Security Requirements,Document security controls required for each pipeline stage,2,PL-2,CICD-SEC-2,
+V1.3.1,Plan,Access Control Planning,Define role-based access control for pipeline resources,1,AC-2,CICD-SEC-3,CWE-269
+V1.3.2,Plan,Access Control Planning,Establish principle of least privilege for pipeline access,1,AC-6,CICD-SEC-3,CWE-269
+V1.4.1,Plan,Secrets Planning,Define a secrets management strategy for the pipeline,1,SC-12,CICD-SEC-4,CWE-798
+V1.4.2,Plan,Secrets Planning,Document secret rotation policies and procedures,2,SC-12,CICD-SEC-4,CWE-798
+V1.5.1,Plan,Feedback Integration,Establish security feedback loops from production to development,2,SA-11,CICD-SEC-1,
+V2.1.1,Develop,Secure Coding,Implement secure coding standards for pipeline scripts,1,SA-11,CICD-SEC-5,CWE-94
+V2.1.2,Develop,Secure Coding,Use parameterized queries in pipeline database operations,1,SA-11,CICD-SEC-5,CWE-89
+V2.1.3,Develop,Secure Coding,Validate and sanitize all inputs in pipeline scripts,1,SI-10,CICD-SEC-5,CWE-20
+V2.2.1,Develop,Code Review,Require code review for all pipeline configuration changes,1,SA-11,CICD-SEC-6,
+V2.2.2,Develop,Code Review,Enforce approval gates for security-critical pipeline changes,2,CM-3,CICD-SEC-6,
+V2.2.3,Develop,Code Review,Document code review findings and remediation actions,2,SA-11,CICD-SEC-6,
+V2.3.1,Develop,Static Analysis,Integrate SAST tools into the development pipeline,1,SA-11,CICD-SEC-7,
+V2.3.2,Develop,Static Analysis,Configure SAST tools to detect OWASP Top 10 vulnerabilities,1,SA-11,CICD-SEC-7,
+V2.3.3,Develop,Static Analysis,Fail builds on high-severity SAST findings,2,SA-11,CICD-SEC-7,
+V2.4.1,Develop,Secret Scanning,Implement automated secret detection in code commits,1,IA-5,CICD-SEC-4,CWE-798
+V2.4.2,Develop,Secret Scanning,Block commits containing detected secrets,2,SC-12,CICD-SEC-4,CWE-798
+V2.4.3,Develop,Secret Scanning,Alert on detected secrets and track remediation,2,IR-6,CICD-SEC-4,CWE-798
+V2.5.1,Develop,Dependency Management,Scan dependencies for known vulnerabilities,1,RA-5,CICD-SEC-8,CWE-1104
+V2.5.2,Develop,Dependency Management,Maintain an inventory of third-party dependencies,1,CM-8,CICD-SEC-8,CWE-1104
+V2.5.3,Develop,Dependency Management,Generate and maintain Software Bill of Materials (SBOM),2,CM-8,CICD-SEC-8,CWE-1104
+V2.6.1,Develop,Container Security,Scan container images for vulnerabilities before deployment,1,RA-5,CICD-SEC-9,
+V2.6.2,Develop,Container Security,Use minimal base images for containers,2,CM-7,CICD-SEC-9,
+V2.6.3,Develop,Container Security,Sign container images cryptographically,3,SC-12,CICD-SEC-9,
+V2.7.1,Develop,IaC Security,Validate Infrastructure as Code templates for security misconfigurations,1,CM-6,CICD-SEC-10,
+V2.7.2,Develop,IaC Security,Version control all infrastructure configuration,1,CM-3,CICD-SEC-10,
+V2.7.3,Develop,IaC Security,Implement policy-as-code for infrastructure deployments,2,AC-4,CICD-SEC-10,
+V3.1.1,Integrate,Build Security,Isolate build environments from production,1,SC-7,CICD-SEC-11,
+V3.1.2,Integrate,Build Security,Use ephemeral build environments,2,SC-7,CICD-SEC-11,
+V3.1.3,Integrate,Build Security,Implement hermetic builds with fixed dependencies,3,SA-11,CICD-SEC-11,
+V3.2.1,Integrate,Artifact Security,Sign build artifacts cryptographically,2,SC-12,CICD-SEC-12,
+V3.2.2,Integrate,Artifact Security,Verify artifact signatures before deployment,2,SC-12,CICD-SEC-12,
+V3.2.3,Integrate,Artifact Security,"Store artifacts in secure, access-controlled repositories",1,AC-3,CICD-SEC-12,
+V3.3.1,Integrate,Integration Testing,Include security tests in integration test suites,1,SA-11,CICD-SEC-13,
+V3.3.2,Integrate,Integration Testing,Implement DAST scanning in staging environments,2,SA-11,CICD-SEC-13,
+V3.3.3,Integrate,Integration Testing,Test for security regressions in each build,2,SA-11,CICD-SEC-13,
+V3.4.1,Integrate,Environment Security,Harden CI/CD runner environments,1,CM-6,CICD-SEC-11,
+V3.4.2,Integrate,Environment Security,Implement network segmentation for pipeline components,2,SC-7,CICD-SEC-11,
+V3.4.3,Integrate,Environment Security,Monitor pipeline infrastructure for security events,2,AU-6,CICD-SEC-11,
+V4.1.1,Release,Deployment Security,Implement automated deployment pipelines,1,CM-3,CICD-SEC-14,
+V4.1.2,Release,Deployment Security,Require approval gates for production deployments,2,CM-3,CICD-SEC-14,
+V4.1.3,Release,Deployment Security,Support automated rollback capabilities,2,CM-3,CICD-SEC-14,
+V4.2.1,Release,Release Validation,Validate release artifacts against security policies,1,CA-2,CICD-SEC-15,
+V4.2.2,Release,Release Validation,Perform pre-deployment security checks,2,CA-2,CICD-SEC-15,
+V4.2.3,Release,Release Validation,Document release security attestations,3,SA-11,CICD-SEC-15,
+V4.3.1,Release,Change Control,Maintain audit trail of all deployments,1,AU-12,CICD-SEC-16,
+V4.3.2,Release,Change Control,Implement change approval workflows,2,CM-3,CICD-SEC-16,
+V4.3.3,Release,Change Control,Track deployment configuration drift,2,CM-3,CICD-SEC-16,
+V4.4.1,Release,Production Readiness,Verify security controls before production release,2,CA-2,CICD-SEC-15,
+V5.1.1,Operate,Monitoring,Monitor pipeline components for security events,1,AU-6,CICD-SEC-17,
+V5.1.2,Operate,Monitoring,Implement alerting for security anomalies,2,IR-4,CICD-SEC-17,
+V5.1.3,Operate,Monitoring,Configure log retention for compliance requirements,2,AU-11,CICD-SEC-17,
+V5.2.1,Operate,Incident Response,Define incident response procedures for pipeline security events,1,IR-1,CICD-SEC-18,
+V5.2.2,Operate,Incident Response,Conduct security incident drills for pipeline breaches,2,IR-3,CICD-SEC-18,
+V5.2.3,Operate,Incident Response,Maintain runbooks for pipeline security incidents,2,IR-8,CICD-SEC-18,
+V5.3.1,Operate,Access Management,Regularly review pipeline access permissions,1,AC-2,CICD-SEC-3,CWE-269
+V5.3.2,Operate,Access Management,Implement just-in-time access for privileged operations,3,AC-2,CICD-SEC-3,CWE-269
+V5.3.3,Operate,Access Management,Audit privileged access to pipeline resources,2,AU-2,CICD-SEC-3,CWE-269
+V5.4.1,Operate,Patch Management,Patch pipeline components regularly,1,SI-2,CICD-SEC-19,
+V5.4.2,Operate,Patch Management,Prioritize security patches based on risk,2,RA-5,CICD-SEC-19,
+V5.4.3,Operate,Patch Management,Track patching status across pipeline infrastructure,2,SI-2,CICD-SEC-19,
+V5.5.1,Operate,Continuous Improvement,Review pipeline security metrics regularly,2,PM-6,CICD-SEC-20,
+V5.5.2,Operate,Continuous Improvement,Conduct periodic security assessments of the pipeline,2,CA-2,CICD-SEC-20,
+V5.5.3,Operate,Continuous Improvement,Update security controls based on threat intelligence,3,RA-3,CICD-SEC-20,
