@@ -81,29 +81,32 @@ export function ChecklistPage() {
         return null;
     }
 
+    const asvsCount = filteredRequirements.filter(r => r.standard === 'ASVS').length;
+    const spvsCount = filteredRequirements.filter(r => r.standard === 'SPVS').length;
+
     return (
         <div className="space-y-6 animate-fade-in">
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardDescription>Total Requirements</CardDescription>
-                        <CardTitle className="text-3xl">{data.included.length}</CardTitle>
+                        <CardDescription>Visible Requirements</CardDescription>
+                        <CardTitle className="text-3xl">{filteredRequirements.length}</CardTitle>
                     </CardHeader>
                 </Card>
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardDescription>ASVS</CardDescription>
+                        <CardDescription>ASVS (Visible)</CardDescription>
                         <CardTitle className="text-3xl text-blue-400">
-                            {data.stats.includedASVS}
+                            {asvsCount}
                         </CardTitle>
                     </CardHeader>
                 </Card>
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardDescription>SPVS</CardDescription>
+                        <CardDescription>SPVS (Visible)</CardDescription>
                         <CardTitle className="text-3xl text-green-400">
-                            {data.stats.includedSPVS}
+                            {spvsCount}
                         </CardTitle>
                     </CardHeader>
                 </Card>
@@ -130,6 +133,19 @@ export function ChecklistPage() {
                         className="w-full h-10 pl-10 pr-4 rounded-md border border-input bg-background text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     />
                 </div>
+
+                {/* Status Filter */}
+                <select
+                    value={filters.status}
+                    onChange={(e) =>
+                        setFilter('status', e.target.value as 'all' | 'selected' | 'unselected')
+                    }
+                    className="h-10 px-3 rounded-md border border-input bg-background text-sm"
+                >
+                    <option value="all">All Status</option>
+                    <option value="selected">Selected</option>
+                    <option value="unselected">Unselected</option>
+                </select>
 
                 {/* Standard Filter */}
                 <select
@@ -165,7 +181,7 @@ export function ChecklistPage() {
                 <select
                     value={filters.category ?? ''}
                     onChange={(e) => setFilter('category', e.target.value || null)}
-                    className="h-10 px-3 rounded-md border border-input bg-background text-sm"
+                    className="h-10 px-3 rounded-md border border-input bg-background text-sm max-w-[200px]"
                 >
                     <option value="">All Categories</option>
                     {categories.map((cat) => (
@@ -213,7 +229,7 @@ export function ChecklistPage() {
                     {selectedIds.size} selected
                 </span>
                 <Button variant="ghost" size="sm" onClick={selectAll}>
-                    Select All
+                    Select Visible
                 </Button>
                 <Button variant="ghost" size="sm" onClick={clearSelection}>
                     Clear
@@ -221,9 +237,9 @@ export function ChecklistPage() {
             </div>
 
             {/* Requirements List */}
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
                 {filteredRequirements.length === 0 ? (
-                    <Card>
+                    <Card className="col-span-1 md:col-span-5">
                         <CardContent className="py-8 text-center text-muted-foreground">
                             <Filter className="h-12 w-12 mx-auto mb-4 opacity-50" />
                             <p>No requirements match your filters.</p>
@@ -234,52 +250,48 @@ export function ChecklistPage() {
                         <Card
                             key={req.requirementId}
                             className={cn(
-                                'transition-colors',
+                                'transition-colors h-full flex flex-col',
                                 selectedIds.has(req.requirementId) && 'border-primary'
                             )}
                         >
-                            <CardContent className="py-4">
-                                <div className="flex items-start gap-4">
+                            <CardContent className="p-4 flex flex-col h-full gap-2">
+                                <div className="flex items-start justify-between gap-2">
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                        <Badge
+                                            variant={req.standard === 'ASVS' ? 'default' : 'secondary'}
+                                            className="text-[10px] px-1.5 h-5"
+                                        >
+                                            {req.standard}
+                                        </Badge>
+                                        <Badge variant="outline" className="text-[10px] px-1.5 h-5">L{req.level}</Badge>
+                                    </div>
                                     <Checkbox
                                         checked={selectedIds.has(req.requirementId)}
                                         onCheckedChange={() => toggleSelection(req.requirementId)}
-                                        className="mt-1"
+                                        className="mt-0.5"
                                     />
+                                </div>
 
-                                    <div className="flex-1 space-y-2">
-                                        <div className="flex items-center gap-2 flex-wrap">
-                                            <Badge
-                                                variant={req.standard === 'ASVS' ? 'default' : 'secondary'}
-                                            >
-                                                {req.standard}
-                                            </Badge>
-                                            <Badge variant="outline">L{req.level}</Badge>
-                                            <code className="text-xs text-muted-foreground">
-                                                {req.requirementId}
-                                            </code>
-                                        </div>
+                                <code className="text-[10px] text-muted-foreground font-mono bg-muted px-1 rounded w-fit">
+                                    {req.requirementId}
+                                </code>
 
-                                        <p className="text-sm">{req.description}</p>
+                                <p className="text-xs line-clamp-4 flex-1" title={req.description}>{req.description}</p>
 
-                                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                                            <span className="flex items-center gap-1">
-                                                <Shield className="h-3 w-3" />
-                                                {req.category}
-                                            </span>
-                                            {req.section && (
-                                                <span>• {req.section}</span>
-                                            )}
-                                        </div>
-
-                                        {req.rationale && (
-                                            <div className="flex items-start gap-2 p-2 rounded-md bg-muted/50 text-xs">
-                                                <CheckCircle2 className="h-3 w-3 mt-0.5 text-primary" />
-                                                <span className="text-muted-foreground">
-                                                    {req.rationale}
-                                                </span>
-                                            </div>
-                                        )}
+                                <div className="mt-auto pt-2 space-y-2">
+                                    <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                                        <Shield className="h-3 w-3" />
+                                        <span className="truncate" title={req.category}>{req.category}</span>
                                     </div>
+
+                                    {req.rationale && (
+                                        <div className="flex items-start gap-1 p-1.5 rounded-md bg-muted/50 text-[10px]">
+                                            <CheckCircle2 className="h-3 w-3 mt-0.5 text-primary shrink-0" />
+                                            <span className="text-muted-foreground line-clamp-2" title={req.rationale}>
+                                                {req.rationale}
+                                            </span>
+                                        </div>
+                                    )}
                                 </div>
                             </CardContent>
                         </Card>

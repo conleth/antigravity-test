@@ -11,6 +11,7 @@ export interface ChecklistFilters {
     standard: 'all' | 'ASVS' | 'SPVS';
     level: 'all' | 1 | 2 | 3;
     category: string | null;
+    status: 'all' | 'selected' | 'unselected';
     search: string;
 }
 
@@ -31,6 +32,7 @@ export function useChecklist(sessionId: string | null) {
             standard: 'all',
             level: 'all',
             category: null,
+            status: 'all',
             search: '',
         },
         isLoading: false,
@@ -84,7 +86,7 @@ export function useChecklist(sessionId: string | null) {
     const selectAll = useCallback(() => {
         setState((s) => {
             if (!s.data) return s;
-            const filtered = getFilteredRequirements(s.data.included, s.filters);
+            const filtered = getFilteredRequirements(s.data.included, s.filters, s.selectedIds);
             const allIds = new Set(filtered.map((r) => r.requirementId));
             return { ...s, selectedIds: allIds };
         });
@@ -116,7 +118,7 @@ export function useChecklist(sessionId: string | null) {
 
     // Filter requirements
     const filteredRequirements = state.data
-        ? getFilteredRequirements(state.data.included, state.filters)
+        ? getFilteredRequirements(state.data.included, state.filters, state.selectedIds)
         : [];
 
     // Get unique categories
@@ -139,7 +141,8 @@ export function useChecklist(sessionId: string | null) {
 
 function getFilteredRequirements(
     requirements: ShortlistedRequirement[],
-    filters: ChecklistFilters
+    filters: ChecklistFilters,
+    selectedIds: Set<string>
 ): ShortlistedRequirement[] {
     return requirements.filter((req) => {
         // Standard filter
@@ -154,6 +157,14 @@ function getFilteredRequirements(
 
         // Category filter
         if (filters.category && req.category !== filters.category) {
+            return false;
+        }
+
+        // Status filter
+        if (filters.status === 'selected' && !selectedIds.has(req.requirementId)) {
+            return false;
+        }
+        if (filters.status === 'unselected' && selectedIds.has(req.requirementId)) {
             return false;
         }
 

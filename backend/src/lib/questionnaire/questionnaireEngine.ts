@@ -5,7 +5,12 @@
  * for the rules engine. Also calculates recommended security level.
  */
 
+import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { join } from 'path';
 import type { DerivedAttributes } from '../rules/types.js';
+
+const DATA_DIR = join(process.cwd(), 'src', 'data');
+const SESSIONS_FILE = join(DATA_DIR, 'sessions.json');
 
 // =============================================================================
 // Question Types
@@ -208,6 +213,34 @@ export interface StoredQuestionnaire {
 
 const questionnaireStore = new Map<string, StoredQuestionnaire>();
 
+// Load sessions on startup
+try {
+    if (existsSync(SESSIONS_FILE)) {
+        const raw = readFileSync(SESSIONS_FILE, 'utf-8');
+        const data = JSON.parse(raw);
+        if (Array.isArray(data)) {
+            data.forEach((session: any) => {
+                // Restore dates
+                session.createdAt = new Date(session.createdAt);
+                session.updatedAt = new Date(session.updatedAt);
+                questionnaireStore.set(session.id, session);
+            });
+            console.log(`Loaded ${data.length} sessions from disk`);
+        }
+    }
+} catch (err) {
+    console.error('Failed to load sessions:', err);
+}
+
+function persistStore() {
+    try {
+        const data = Array.from(questionnaireStore.values());
+        writeFileSync(SESSIONS_FILE, JSON.stringify(data, null, 2));
+    } catch (err) {
+        console.error('Failed to save sessions:', err);
+    }
+}
+
 export function saveQuestionnaire(
     id: string,
     answers: QuestionnaireAnswers,
@@ -225,6 +258,7 @@ export function saveQuestionnaire(
     };
 
     questionnaireStore.set(id, stored);
+    persistStore();
     return stored;
 }
 
@@ -233,7 +267,9 @@ export function getQuestionnaire(id: string): StoredQuestionnaire | undefined {
 }
 
 export function deleteQuestionnaire(id: string): boolean {
-    return questionnaireStore.delete(id);
+    const result = questionnaireStore.delete(id);
+    if (result) persistStore();
+    return result;
 }
 
 export function listQuestionnaires(): StoredQuestionnaire[] {

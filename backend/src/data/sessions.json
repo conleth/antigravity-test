@@ -1,0 +1,66 @@
+[
+  {
+    "id": "07de8ea7-33b1-451b-ac41-1000252fcaec",
+    "answers": {
+      "app-type": "web",
+      "auth-type": "sso",
+      "data-sensitivity": "public",
+      "internet-exposure": "mixed",
+      "hosting-model": "cloud",
+      "pipeline-ci": true,
+      "pipeline-signing": true,
+      "pipeline-secrets": true,
+      "pipeline-iac": false,
+      "pipeline-sbom": false
+    },
+    "attributes": {
+      "appType": "web",
+      "authType": "sso",
+      "dataSensitivity": "public",
+      "internetExposure": "mixed",
+      "hostingModel": "cloud",
+      "pipelineMaturity": {
+        "hasCI": true,
+        "hasSignedArtifacts": true,
+        "hasSecretScanning": true,
+        "hasIaC": false,
+        "hasSBOM": false
+      },
+      "recommendedLevel": 1
+    },
+    "createdAt": "2026-01-19T21:39:42.239Z",
+    "updatedAt": "2026-01-19T21:39:42.239Z"
+  },
+  {
+    "id": "4c19d1e4-348b-4e35-86ed-bda2bc4d9f8b",
+    "answers": {
+      "app-type": "mobile",
+      "auth-type": "session",
+      "data-sensitivity": "public",
+      "internet-exposure": "public",
+      "hosting-model": "cloud",
+      "pipeline-ci": true,
+      "pipeline-signing": false,
+      "pipeline-secrets": false,
+      "pipeline-iac": false,
+      "pipeline-sbom": false
+    },
+    "attributes": {
+      "appType": "mobile",
+      "authType": "session",
+      "dataSensitivity": "public",
+      "internetExposure": "public",
+      "hostingModel": "cloud",
+      "pipelineMaturity": {
+        "hasCI": true,
+        "hasSignedArtifacts": false,
+        "hasSecretScanning": false,
+        "hasIaC": false,
+        "hasSBOM": false
+      },
+      "recommendedLevel": 2
+    },
+    "createdAt": "2026-01-19T21:43:15.449Z",
+    "updatedAt": "2026-01-19T21:43:15.449Z"
+  }
+]
