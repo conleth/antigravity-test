@@ -160,34 +160,42 @@ export function ChecklistPage() {
                     <option value="Security Champion">Security Champion</option>
                 </select>
 
-                {/* Standard Filter */}
+                {/* ASVS Level Filter */}
                 <select
-                    value={filters.standard}
-                    onChange={(e) =>
-                        setFilter('standard', e.target.value as 'all' | 'ASVS' | 'SPVS')
-                    }
+                    value={filters.asvsLevel}
+                    onChange={(e) => {
+                        const val = e.target.value;
+                        setFilter(
+                            'asvsLevel',
+                            (val === 'all' || val === 'none') ? val : (parseInt(val) as 1 | 2 | 3)
+                        );
+                    }}
                     className="h-10 px-3 rounded-md border border-input bg-background text-sm"
                 >
-                    <option value="all">All Standards</option>
-                    <option value="ASVS">ASVS Only</option>
-                    <option value="SPVS">SPVS Only</option>
+                    <option value="all">ASVS (All Levels)</option>
+                    <option value="1">ASVS Level 1</option>
+                    <option value="2">ASVS Level 2</option>
+                    <option value="3">ASVS Level 3</option>
+                    <option value="none">Hide ASVS</option>
                 </select>
 
-                {/* Level Filter */}
+                {/* SPVS Level Filter */}
                 <select
-                    value={filters.level}
-                    onChange={(e) =>
+                    value={filters.spvsLevel}
+                    onChange={(e) => {
+                        const val = e.target.value;
                         setFilter(
-                            'level',
-                            e.target.value === 'all' ? 'all' : (parseInt(e.target.value) as 1 | 2 | 3)
-                        )
-                    }
+                            'spvsLevel',
+                            (val === 'all' || val === 'none') ? val : (parseInt(val) as 1 | 2 | 3)
+                        );
+                    }}
                     className="h-10 px-3 rounded-md border border-input bg-background text-sm"
                 >
-                    <option value="all">All Levels</option>
-                    <option value="1">Level 1</option>
-                    <option value="2">Level 2</option>
-                    <option value="3">Level 3</option>
+                    <option value="all">SPVS (All Levels)</option>
+                    <option value="1">SPVS Level 1</option>
+                    <option value="2">SPVS Level 2</option>
+                    <option value="3">SPVS Level 3</option>
+                    <option value="none">Hide SPVS</option>
                 </select>
 
                 {/* Category Filter */}

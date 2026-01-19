@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, ChevronLeft, Check, Loader2 } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Check, Loader2, Shield, GitBranch } from 'lucide-react';
 import { useQuestionnaire } from '@/hooks/useQuestionnaire';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,12 +11,14 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 
 export function QuestionnairePage() {
     const navigate = useNavigate();
+    const [showSummary, setShowSummary] = useState(false);
     const {
         questions,
         currentQuestion,
@@ -32,17 +35,22 @@ export function QuestionnairePage() {
         nextStep,
         prevStep,
         submit,
+        attributes,
     } = useQuestionnaire();
 
     const handleSubmit = async () => {
         try {
             const response = await submit();
-            // Store session ID in localStorage for checklist page
+            // Store session ID immediately
             localStorage.setItem('rat-session-id', response.sessionId);
-            navigate('/checklist');
+            setShowSummary(true);
         } catch {
             // Error is already set in state
         }
+    };
+
+    const handleProceed = () => {
+        navigate('/checklist');
     };
 
     if (isLoading) {
@@ -61,6 +69,94 @@ export function QuestionnairePage() {
                     <CardDescription>{error}</CardDescription>
                 </CardHeader>
             </Card>
+        );
+    }
+
+    if (showSummary && attributes) {
+        return (
+            <div className="max-w-4xl mx-auto space-y-6 animate-fade-in">
+                <div className="text-center space-y-2 mb-8">
+                    <h1 className="text-3xl font-bold tracking-tight">Recommendation Summary</h1>
+                    <p className="text-muted-foreground">
+                        Based on your answers, we have generated a tailored security profile.
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* ASVS Recommendation */}
+                    <Card className="border-t-4 border-t-blue-500 shadow-sm relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-4 opacity-10">
+                            <Shield className="w-24 h-24" />
+                        </div>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Badge variant="default" className="bg-blue-500 hover:bg-blue-600">ASVS</Badge>
+                                Application Security
+                            </CardTitle>
+                            <CardDescription>
+                                OWASP Application Security Verification Standard
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="flex flex-col items-center py-4">
+                                <span className="text-sm text-muted-foreground uppercase tracking-wide font-semibold">Recommended Level</span>
+                                <span className="text-5xl font-bold text-blue-600">L{attributes.recommendedLevel}</span>
+                            </div>
+                            <div className="space-y-2 text-sm text-muted-foreground bg-muted/50 p-4 rounded-lg">
+                                <p><strong>Why?</strong></p>
+                                <ul className="list-disc pl-4 space-y-1">
+                                    {attributes.dataSensitivity === 'public' && <li>App handles public data</li>}
+                                    {attributes.dataSensitivity === 'internal' && <li>App handles internal data</li>}
+                                    {attributes.dataSensitivity === 'confidential' && <li>App handles confidential data</li>}
+                                    {attributes.internetExposure === 'public' && <li>Accessible from the internet</li>}
+                                </ul>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* SPVS Recommendation */}
+                    <Card className="border-t-4 border-t-green-500 shadow-sm relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-4 opacity-10">
+                            <GitBranch className="w-24 h-24" />
+                        </div>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Badge variant="default" className="bg-green-500 hover:bg-green-600">SPVS</Badge>
+                                Supply Chain
+                            </CardTitle>
+                            <CardDescription>
+                                OWASP Software Component Verification Standard
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="flex flex-col items-center py-4">
+                                <span className="text-sm text-muted-foreground uppercase tracking-wide font-semibold">Recommended Level</span>
+                                <span className="text-5xl font-bold text-green-600">L1+</span>
+                            </div>
+                            <div className="space-y-2 text-sm text-muted-foreground bg-muted/50 p-4 rounded-lg">
+                                <p><strong>Focus Areas:</strong></p>
+                                <ul className="list-disc pl-4 space-y-1">
+                                    <li>Secure Build Pipeline</li>
+                                    <li>Dependency Management</li>
+                                    {!attributes.pipelineMaturity?.hasSignedArtifacts && (
+                                        <li className="text-amber-600 font-medium">Implement Artifact Signing</li>
+                                    )}
+                                    {!attributes.pipelineMaturity?.hasSecretScanning && (
+                                        <li className="text-amber-600 font-medium">Enable Secret Scanning</li>
+                                    )}
+                                </ul>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                <div className="flex justify-center pt-8">
+                    <Button size="lg" onClick={handleProceed} className="w-full md:w-auto min-w-[200px]">
+                        Proceed to Checklist
+                        <ChevronRight className="ml-2 h-4 w-4" />
+                    </Button>
+                </div>
+            </div>
         );
     }
 
@@ -166,7 +262,7 @@ export function QuestionnairePage() {
                             ) : (
                                 <Check className="h-4 w-4 mr-2" />
                             )}
-                            Generate Checklist
+                            View recommendations
                         </Button>
                     ) : (
                         <Button

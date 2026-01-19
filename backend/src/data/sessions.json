@@ -62,5 +62,101 @@
     },
     "createdAt": "2026-01-19T21:43:15.449Z",
     "updatedAt": "2026-01-19T21:43:15.449Z"
+  },
+  {
+    "id": "ade4ded1-a74a-4c63-af81-1695c0b8e9fe",
+    "answers": {
+      "app-type": "api",
+      "auth-type": "session",
+      "data-sensitivity": "internal",
+      "internet-exposure": "private",
+      "hosting-model": "onprem",
+      "pipeline-ci": true,
+      "pipeline-signing": true,
+      "pipeline-secrets": true,
+      "pipeline-iac": true,
+      "pipeline-sbom": true
+    },
+    "attributes": {
+      "appType": "api",
+      "authType": "session",
+      "dataSensitivity": "internal",
+      "internetExposure": "private",
+      "hostingModel": "onprem",
+      "pipelineMaturity": {
+        "hasCI": true,
+        "hasSignedArtifacts": true,
+        "hasSecretScanning": true,
+        "hasIaC": true,
+        "hasSBOM": true
+      },
+      "recommendedLevel": 1
+    },
+    "createdAt": "2026-01-19T22:13:54.065Z",
+    "updatedAt": "2026-01-19T22:13:54.065Z"
+  },
+  {
+    "id": "cde02604-794b-48a8-9eab-1cd8a5973be9",
+    "answers": {
+      "app-type": "api",
+      "auth-type": "session",
+      "data-sensitivity": "internal",
+      "internet-exposure": "private",
+      "hosting-model": "onprem",
+      "pipeline-ci": true,
+      "pipeline-signing": false,
+      "pipeline-secrets": true,
+      "pipeline-iac": true,
+      "pipeline-sbom": false
+    },
+    "attributes": {
+      "appType": "api",
+      "authType": "session",
+      "dataSensitivity": "internal",
+      "internetExposure": "private",
+      "hostingModel": "onprem",
+      "pipelineMaturity": {
+        "hasCI": true,
+        "hasSignedArtifacts": false,
+        "hasSecretScanning": true,
+        "hasIaC": true,
+        "hasSBOM": false
+      },
+      "recommendedLevel": 1
+    },
+    "createdAt": "2026-01-19T22:20:42.265Z",
+    "updatedAt": "2026-01-19T22:20:42.265Z"
+  },
+  {
+    "id": "824294ef-715f-4c28-87a9-cfb96b5a76fa",
+    "answers": {
+      "app-type": "web",
+      "auth-type": "oauth",
+      "data-sensitivity": "confidential",
+      "internet-exposure": "mixed",
+      "hosting-model": "hybrid",
+      "pipeline-ci": true,
+      "pipeline-signing": true,
+      "pipeline-secrets": false,
+      "pipeline-iac": false,
+      "pipeline-sbom": false
+    },
+    "attributes": {
+      "appType": "web",
+      "authType": "oauth",
+      "dataSensitivity": "confidential",
+      "internetExposure": "mixed",
+      "hostingModel": "hybrid",
+      "pipelineMaturity": {
+        "hasCI": true,
+        "hasSignedArtifacts": true,
+        "hasSecretScanning": false,
+        "hasIaC": false,
+        "hasSBOM": false
+      },
+      "recommendedLevel": 2
+    },
+    "createdAt": "2026-01-19T22:28:37.015Z",
+    "updatedAt": "2026-01-19T22:28:37.015Z"
   }
 ]
