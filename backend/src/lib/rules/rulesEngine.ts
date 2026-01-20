@@ -376,61 +376,16 @@ export function evaluateRules(input: RulesEngineInput): ShortlistResult {
         return ruleDescs.join('; ');
     }
 
-    // Helper to determine roles based on standard and chapter
-    function getRoles(standard: 'ASVS' | 'SPVS', chapterId: string): string[] {
-        const roles: string[] = [];
-
-        if (standard === 'SPVS') {
-            roles.push('DevOps');
-            return roles;
-        }
-
-        // ASVS Logic
-        // Chapter ID expected to be "V1", "V2", etc. or "1", "2"
-        const cleanChapter = chapterId.toUpperCase().replace(/^V/, '');
-        const chapterNum = parseInt(cleanChapter, 10);
-
-        if (isNaN(chapterNum)) return roles;
-
-        switch (chapterNum) {
-            case 1: // Architecture
-                roles.push('Architect');
-                break;
-            case 2: // Authentication
-            case 3: // Session Management
-            case 4: // Access Control
-            case 5: // Input Validation
-            case 7: // Error Handling
-            case 11: // Business Logic
-            case 12: // Files
-            case 13: // API
-                roles.push('Developer');
-                break;
-            case 9: // Communications
-            case 14: // Configuration
-                roles.push('DevOps');
-                break;
-            case 6: // Cryptography
-            case 8: // Data Protection
-            case 10: // Malicious Code
-                roles.push('Security Champion');
-                break;
-        }
-
-        return roles;
-    }
-
     // Convert to output format
     const included: ShortlistedRequirement[] = [];
 
     for (const [, { req, rules }] of asvsIncluded) {
-        const roles = getRoles('ASVS', req.chapter.id);
         included.push(
             asvsToShortlisted(
                 req,
                 asvsData.version,
                 generateRationale(rules),
-                roles
+                []
             )
         );
     }
@@ -441,7 +396,7 @@ export function evaluateRules(input: RulesEngineInput): ShortlistResult {
                 req,
                 spvsData.version,
                 generateRationale(rules),
-                ['DevOps'] // All SPVS is DevOps
+                []
             )
         );
     }

@@ -8,11 +8,10 @@ import {
 } from '@/lib/api';
 
 export interface ChecklistFilters {
-    asvsLevel: 'all' | 1 | 2 | 3 | 'none';
-    spvsLevel: 'all' | 1 | 2 | 3 | 'none';
+    standard: 'all' | 'ASVS' | 'SPVS';
+    level: 'all' | 1 | 2 | 3;
     category: string | null;
     status: 'all' | 'selected' | 'unselected';
-    role: string | null;
     search: string;
 }
 
@@ -30,11 +29,10 @@ export function useChecklist(sessionId: string | null) {
         data: null,
         selectedIds: new Set(),
         filters: {
-            asvsLevel: 'all',
-            spvsLevel: 'all',
+            standard: 'all',
+            level: 'all',
             category: null,
             status: 'all',
-            role: null,
             search: '',
         },
         isLoading: false,
@@ -147,42 +145,19 @@ function getFilteredRequirements(
     selectedIds: Set<string>
 ): ShortlistedRequirement[] {
     return requirements.filter((req) => {
-        // ASVS Filter Logic
-        let asvsMatch = false;
-        if (req.standard === 'ASVS') {
-            if (filters.asvsLevel === 'all') {
-                asvsMatch = true;
-            } else if (filters.asvsLevel !== 'none' && req.level <= filters.asvsLevel) {
-                asvsMatch = true;
-            }
+        // Standard filter
+        if (filters.standard !== 'all' && req.standard !== filters.standard) {
+            return false;
         }
 
-        // SPVS Filter Logic
-        let spvsMatch = false;
-        if (req.standard === 'SPVS') {
-            if (filters.spvsLevel === 'all') {
-                spvsMatch = true;
-            } else if (filters.spvsLevel !== 'none' && req.level <= filters.spvsLevel) {
-                spvsMatch = true;
-            }
-        }
-
-        // Combine Standards: If neither matched (meaning excluded by level or 'none'), return false
-        // Note: A requirement is only ONE standard. So strict OR check.
-        if (!asvsMatch && !spvsMatch) {
+        // Level filter
+        if (filters.level !== 'all' && req.level !== filters.level) {
             return false;
         }
 
         // Category filter
         if (filters.category && req.category !== filters.category) {
             return false;
-        }
-
-        // Role filter
-        if (filters.role && filters.role !== 'all') {
-            if (!req.tags || !req.tags.includes(filters.role)) {
-                return false;
-            }
         }
 
         // Status filter
