@@ -11,7 +11,8 @@ function App() {
                 <Route path="/" element={<AppLayout />}>
                     <Route index element={<Navigate to="/questionnaire" replace />} />
                     <Route path="questionnaire" element={<QuestionnairePage />} />
-                    <Route path="checklist" element={<ChecklistPage />} />
+                    <Route path="checklist" element={<ChecklistPage viewMode="checklist" />} />
+                    <Route path="in-scope" element={<ChecklistPage viewMode="in-scope" />} />
                     <Route path="exclusions" element={<ExclusionsPage />} />
                 </Route>
             </Routes>

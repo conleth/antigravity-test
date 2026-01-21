@@ -8,9 +8,12 @@ import {
     Shield,
     AlertCircle,
     CheckCircle2,
+    Save,
+    Ticket,
 } from 'lucide-react';
 import { useChecklist } from '@/hooks/useChecklist';
 import { Button } from '@/components/ui/button';
+import { TicketingDialog } from '@/components/TicketingDialog';
 import {
     Card,
     CardContent,
@@ -22,9 +25,14 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 
-export function ChecklistPage() {
+interface ChecklistPageProps {
+    viewMode?: 'checklist' | 'in-scope' | 'exclusions';
+}
+
+export function ChecklistPage({ viewMode = 'checklist' }: ChecklistPageProps) {
     const navigate = useNavigate();
     const [sessionId, setSessionId] = useState<string | null>(null);
+    const [isTicketingOpen, setIsTicketingOpen] = useState(false);
 
     useEffect(() => {
         const stored = localStorage.getItem('rat-session-id');
@@ -50,6 +58,18 @@ export function ChecklistPage() {
         clearSelection,
         export: doExport,
     } = useChecklist(sessionId);
+
+    // Save handler
+    const handleSave = async () => {
+        if (!sessionId || !data) return;
+        try {
+            await import('@/lib/api').then(m => m.updateSelection(sessionId, Array.from(selectedIds)));
+            // Optional: Show toast or feedback
+            navigate('/in-scope');
+        } catch (err) {
+            console.error('Failed to save selection', err);
+        }
+    };
 
     if (!sessionId) {
         return null;
@@ -118,6 +138,18 @@ export function ChecklistPage() {
                         </CardTitle>
                     </CardHeader>
                 </Card>
+            </div>
+
+            {/* Save Selection Action */}
+            <div className="flex justify-end">
+                <Button
+                    onClick={handleSave}
+                    className="bg-green-600 hover:bg-green-700 text-white shadow-md"
+                    size="lg"
+                >
+                    <Save className="h-5 w-5 mr-2" />
+                    Save & View Scope
+                </Button>
             </div>
 
             {/* Filters and Actions */}
@@ -220,6 +252,17 @@ export function ChecklistPage() {
                         <Download className="h-4 w-4 mr-2" />
                         Markdown
                     </Button>
+                    {viewMode === 'in-scope' && (
+                        <Button
+                            variant="default"
+                            size="sm"
+                            onClick={() => setIsTicketingOpen(true)}
+                            className="bg-primary text-primary-foreground"
+                        >
+                            <Ticket className="h-4 w-4 mr-2" />
+                            Create Tickets
+                        </Button>
+                    )}
                 </div>
             </div>
 
@@ -303,6 +346,14 @@ export function ChecklistPage() {
             <div className="text-center text-sm text-muted-foreground">
                 Showing {filteredRequirements.length} of {data.included.length} requirements
             </div>
+            {sessionId && (
+                <TicketingDialog
+                    open={isTicketingOpen}
+                    onOpenChange={setIsTicketingOpen}
+                    sessionId={sessionId}
+                    requirementIds={Array.from(selectedIds)}
+                />
+            )}
         </div>
     );
 }

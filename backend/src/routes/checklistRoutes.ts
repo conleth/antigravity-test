@@ -10,12 +10,16 @@ import { z } from 'zod';
 import { loadASVSData } from '../lib/asvsData.js';
 import { loadSPVSData } from '../lib/spvsData.js';
 import { evaluateRules } from '../lib/rules/rulesEngine.js';
-import type { RuleSet, DerivedAttributes, ShortlistResult } from '../lib/rules/types.js';
+import type {
+    RuleSet, DerivedAttributes, ShortlistResult
+} from '../lib/rules/types';
+
 import {
     processAnswers,
     validateAnswers,
     saveQuestionnaire,
     getQuestionnaire,
+    updateQuestionnaireSelection,
     listQuestionnaires,
     type Question,
     type QuestionnaireAnswers,
@@ -24,6 +28,10 @@ import {
 // Import data files
 import questionsData from '../data/questions.json' assert { type: 'json' };
 import rulesData from '../data/rules.json' assert { type: 'json' };
+
+const RULES = rulesData as unknown as RuleSet;
+const ASVS_DATA = loadASVSData();
+const SPVS_DATA = loadSPVSData();
 
 // =============================================================================
 // Schemas
@@ -174,7 +182,92 @@ export async function checklistRoutes(fastify: FastifyInstance): Promise<void> {
     );
 
     // ---------------------------------------------------------------------------
-    // POST /api/checklist/preview - Preview checklist without saving session
+    // POST /api/checklist/selection - Update user selection
+    // ---------------------------------------------------------------------------
+    fastify.post(
+        '/api/checklist/selection',
+        async (
+            request: FastifyRequest<{
+                Body: { sessionId: string; selectedIds: string[] };
+            }>,
+            reply: FastifyReply
+        ) => {
+            const { sessionId, selectedIds } = request.body;
+
+            if (!sessionId || !selectedIds) {
+                return reply.status(400).send({ error: 'sessionId and selectedIds are required' });
+            }
+
+            const updated = updateQuestionnaireSelection(sessionId, selectedIds);
+            if (!updated) {
+                return reply.status(404).send({ error: 'Session not found' });
+            }
+
+            return reply.send({ success: true });
+        }
+    );
+
+    // ---------------------------------------------------------------------------
+    // GET /api/exclusions - Get list of excluded requirements
+    // ---------------------------------------------------------------------------
+    fastify.get(
+        '/api/exclusions',
+        async (
+            request: FastifyRequest<{ Querystring: { sessionId: string } }>,
+            reply: FastifyReply
+        ) => {
+            const { sessionId } = request.query;
+
+            if (!sessionId) {
+                return reply.status(400).send({ error: 'sessionId is required' });
+            }
+
+            const stored = getQuestionnaire(sessionId);
+            if (!stored) {
+                return reply.status(404).send({ error: 'Session not found' });
+            }
+
+            // Run rules to get base included/excluded
+            const rulesResult = evaluateRules({
+                attributes: stored.attributes,
+                ruleSet: RULES,
+                asvsData: ASVS_DATA,
+                spvsData: SPVS_DATA,
+                includeExclusions: true,
+            });
+
+            const excluded = rulesResult.excluded || [];
+
+            // Add items that were included but NOT selected by user
+            const selectedSet = new Set(stored.selectedIds || []);
+            const userExcluded = rulesResult.included.filter(req => !selectedSet.has(req.requirementId));
+
+            // Convert user excluded to ExcludedRequirement format
+            userExcluded.forEach(req => {
+                excluded.push({
+                    requirementId: req.requirementId,
+                    title: req.description,
+                    standard: req.standard,
+                    standardVersion: req.standardVersion,
+                    exclusionReason: 'Not selected by user',
+                    excludedByRule: 'User Selection'
+                });
+            });
+
+            // Recalculate stats
+            const stats = {
+                excludedASVS: excluded.filter(r => r.standard === 'ASVS').length,
+                excludedSPVS: excluded.filter(r => r.standard === 'SPVS').length,
+            };
+
+            return reply.send({
+                sessionId,
+                excluded,
+                stats,
+            });
+        }
+    );
+
     // ---------------------------------------------------------------------------
     fastify.post(
         '/api/checklist/preview',
@@ -275,49 +368,7 @@ export async function checklistRoutes(fastify: FastifyInstance): Promise<void> {
         }
     );
 
-    // ---------------------------------------------------------------------------
-    // GET /api/exclusions - Get excluded requirements with reasons
-    // ---------------------------------------------------------------------------
-    fastify.get(
-        '/api/exclusions',
-        async (
-            request: FastifyRequest<{
-                Querystring: { sessionId?: string };
-            }>,
-            reply: FastifyReply
-        ) => {
-            const { sessionId } = request.query;
 
-            if (!sessionId) {
-                return reply.status(400).send({ error: 'sessionId is required' });
-            }
-
-            const stored = getQuestionnaire(sessionId);
-            if (!stored) {
-                return reply.status(404).send({ error: 'Session not found' });
-            }
-
-            // Load and evaluate with exclusions
-            const asvsData = loadASVSData();
-            const spvsData = loadSPVSData();
-            const result = evaluateRules({
-                attributes: stored.attributes,
-                ruleSet: rulesData as RuleSet,
-                asvsData,
-                spvsData,
-                includeExclusions: true,
-            });
-
-            return reply.send({
-                sessionId,
-                excluded: result.excluded ?? [],
-                stats: {
-                    excludedASVS: result.stats.excludedASVS,
-                    excludedSPVS: result.stats.excludedSPVS,
-                },
-            });
-        }
-    );
 }
 
 // =============================================================================

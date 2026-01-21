@@ -1,10 +1,11 @@
 import { Outlet, NavLink } from 'react-router-dom';
-import { Shield, ClipboardList, EyeOff } from 'lucide-react';
+import { Shield, ClipboardList, EyeOff, ClipboardCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
     { to: '/questionnaire', icon: Shield, label: 'Questionnaire' },
-    { to: '/checklist', icon: ClipboardList, label: 'Checklist' },
+    { to: '/checklist', icon: ClipboardList, label: 'Results' },
+    { to: '/in-scope', icon: ClipboardCheck, label: 'In Scope' },
     { to: '/exclusions', icon: EyeOff, label: 'Exclusions' },
 ];
 

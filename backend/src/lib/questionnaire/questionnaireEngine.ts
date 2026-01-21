@@ -207,6 +207,7 @@ export interface StoredQuestionnaire {
     id: string;
     answers: QuestionnaireAnswers;
     attributes: DerivedAttributes;
+    selectedIds?: string[];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -256,6 +257,22 @@ export function saveQuestionnaire(
         createdAt: existing?.createdAt ?? now,
         updatedAt: now,
     };
+
+    questionnaireStore.set(id, stored);
+    persistStore();
+    return stored;
+}
+
+// Update questionnaire selection
+export function updateQuestionnaireSelection(
+    id: string,
+    selectedIds: string[]
+): StoredQuestionnaire | undefined {
+    const stored = questionnaireStore.get(id);
+    if (!stored) return undefined;
+
+    stored.selectedIds = selectedIds;
+    stored.updatedAt = new Date();
 
     questionnaireStore.set(id, stored);
     persistStore();
