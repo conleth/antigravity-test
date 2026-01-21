@@ -1,0 +1,67 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - img [ref=e7]
+        - generic [ref=e9]: Modern RAT
+      - navigation [ref=e10]:
+        - link "Questionnaire" [ref=e11] [cursor=pointer]:
+          - /url: /questionnaire
+          - img [ref=e12]
+          - text: Questionnaire
+        - link "Results" [ref=e14] [cursor=pointer]:
+          - /url: /checklist
+          - img [ref=e15]
+          - text: Results
+        - link "In Scope" [ref=e18] [cursor=pointer]:
+          - /url: /in-scope
+          - img [ref=e19]
+          - text: In Scope
+        - link "Exclusions" [ref=e23] [cursor=pointer]:
+          - /url: /exclusions
+          - img [ref=e24]
+          - text: Exclusions
+      - generic [ref=e30]: Security Requirements Automation
+  - main [ref=e31]:
+    - generic [ref=e32]:
+      - generic [ref=e33]:
+        - generic [ref=e34]:
+          - generic [ref=e35]: Question 4 of 10
+          - generic [ref=e36]: 40% complete
+        - progressbar [ref=e37]
+      - generic [ref=e39]:
+        - generic [ref=e40]:
+          - heading "What is the network exposure of this application?" [level=3] [ref=e41]
+          - paragraph [ref=e42]: Consider how the application is accessed.
+        - radiogroup [ref=e44]:
+          - generic [ref=e45] [cursor=pointer]:
+            - radio "Public Internet Accessible from the internet" [checked] [active] [ref=e46]:
+              - img [ref=e48]
+            - generic [ref=e50]:
+              - paragraph [ref=e51]: Public Internet
+              - paragraph [ref=e52]: Accessible from the internet
+          - generic [ref=e53] [cursor=pointer]:
+            - radio "Private Network Only VPN or internal network only" [ref=e54]
+            - generic [ref=e55]:
+              - paragraph [ref=e56]: Private Network Only
+              - paragraph [ref=e57]: VPN or internal network only
+          - generic [ref=e58] [cursor=pointer]:
+            - radio "Mixed Some components public, some private" [ref=e59]
+            - generic [ref=e60]:
+              - paragraph [ref=e61]: Mixed
+              - paragraph [ref=e62]: Some components public, some private
+        - generic [ref=e63]:
+          - button "Previous" [ref=e64] [cursor=pointer]:
+            - img [ref=e65]
+            - text: Previous
+          - button "Next" [disabled]:
+            - text: Next
+            - img
+  - contentinfo [ref=e78]:
+    - generic [ref=e79]:
+      - paragraph [ref=e80]: Modern RAT - Security Requirements Automation Tool
+      - paragraph [ref=e81]: "Standards: OWASP ASVS 5.0.0 | OWASP SPVS 1.0.0"
+```

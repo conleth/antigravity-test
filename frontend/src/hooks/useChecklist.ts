@@ -51,7 +51,12 @@ export function useChecklist(sessionId: string | null) {
         try {
             setState((s) => ({ ...s, isLoading: true, error: null }));
             const response = await getChecklist(sid, false);
-            setState((s) => ({ ...s, data: response, isLoading: false }));
+            setState((s) => ({
+                ...s,
+                data: response,
+                selectedIds: new Set(response.selectedIds || []),
+                isLoading: false
+            }));
         } catch (err) {
             setState((s) => ({
                 ...s,

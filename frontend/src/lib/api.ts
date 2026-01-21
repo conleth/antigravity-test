@@ -65,6 +65,7 @@ export interface ChecklistResponse {
     sessionId: string;
     attributes: DerivedAttributes;
     included: ShortlistedRequirement[];
+    selectedIds: string[];
     excluded?: ExcludedRequirement[];
     stats: {
         totalASVS: number;

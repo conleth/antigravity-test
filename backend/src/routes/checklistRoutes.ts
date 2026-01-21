@@ -177,6 +177,7 @@ export async function checklistRoutes(fastify: FastifyInstance): Promise<void> {
             return reply.send({
                 sessionId,
                 ...result,
+                selectedIds: stored.selectedIds || [],
             });
         }
     );

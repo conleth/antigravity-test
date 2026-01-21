@@ -59,6 +59,17 @@ export function ChecklistPage({ viewMode = 'checklist' }: ChecklistPageProps) {
         export: doExport,
     } = useChecklist(sessionId);
 
+    // Sync filters with viewMode
+    useEffect(() => {
+        if (viewMode === 'in-scope') {
+            setFilter('status', 'selected');
+        } else if (viewMode === 'exclusions') {
+            setFilter('status', 'unselected');
+        } else {
+            setFilter('status', 'all');
+        }
+    }, [viewMode, setFilter]);
+
     // Save handler
     const handleSave = async () => {
         if (!sessionId || !data) return;
