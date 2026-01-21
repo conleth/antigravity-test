@@ -10,6 +10,8 @@ import {
     CheckCircle2,
     Save,
     Ticket,
+    ChevronDown,
+    ChevronRight,
 } from 'lucide-react';
 import { useChecklist } from '@/hooks/useChecklist';
 import { Button } from '@/components/ui/button';
@@ -24,15 +26,78 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
+import { ShortlistedRequirement } from '@/lib/api';
 
 interface ChecklistPageProps {
     viewMode?: 'checklist' | 'in-scope' | 'exclusions';
+}
+
+function RequirementCard({
+    req,
+    selectedIds,
+    toggleSelection,
+}: {
+    req: ShortlistedRequirement;
+    selectedIds: Set<string>;
+    toggleSelection: (id: string) => void;
+}) {
+    return (
+        <Card
+            className={cn(
+                'transition-colors h-full flex flex-col',
+                selectedIds.has(req.requirementId) && 'border-primary'
+            )}
+        >
+            <CardContent className="p-4 flex flex-col h-full gap-2">
+                <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <Badge
+                            variant={req.standard === 'ASVS' ? 'default' : 'secondary'}
+                            className="text-[10px] px-1.5 h-5"
+                        >
+                            {req.standard}
+                        </Badge>
+                        <Badge variant="outline" className="text-[10px] px-1.5 h-5">L{req.level}</Badge>
+                    </div>
+                    <Checkbox
+                        checked={selectedIds.has(req.requirementId)}
+                        onCheckedChange={() => toggleSelection(req.requirementId)}
+                        className="mt-0.5"
+                    />
+                </div>
+
+                <code className="text-[10px] text-muted-foreground font-mono bg-muted px-1 rounded w-fit">
+                    {req.requirementId}
+                </code>
+
+                <p className="text-xs line-clamp-4 flex-1" title={req.description}>{req.description}</p>
+
+                <div className="mt-auto pt-2 space-y-2">
+                    <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                        <Shield className="h-3 w-3" />
+                        <span className="truncate" title={req.category}>{req.category}</span>
+                    </div>
+
+                    {req.rationale && (
+                        <div className="flex items-start gap-1 p-1.5 rounded-md bg-muted/50 text-[10px]">
+                            <CheckCircle2 className="h-3 w-3 mt-0.5 text-primary shrink-0" />
+                            <span className="text-muted-foreground line-clamp-2" title={req.rationale}>
+                                {req.rationale}
+                            </span>
+                        </div>
+                    )}
+                </div>
+            </CardContent>
+        </Card>
+    );
 }
 
 export function ChecklistPage({ viewMode = 'checklist' }: ChecklistPageProps) {
     const navigate = useNavigate();
     const [sessionId, setSessionId] = useState<string | null>(null);
     const [isTicketingOpen, setIsTicketingOpen] = useState(false);
+    const [asvsExpanded, setAsvsExpanded] = useState(true);
+    const [spvsExpanded, setSpvsExpanded] = useState(true);
 
     useEffect(() => {
         const stored = localStorage.getItem('rat-session-id');
@@ -291,65 +356,92 @@ export function ChecklistPage({ viewMode = 'checklist' }: ChecklistPageProps) {
             </div>
 
             {/* Requirements List */}
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+            <div className="space-y-8">
                 {filteredRequirements.length === 0 ? (
-                    <Card className="col-span-1 md:col-span-5">
+                    <Card>
                         <CardContent className="py-8 text-center text-muted-foreground">
                             <Filter className="h-12 w-12 mx-auto mb-4 opacity-50" />
                             <p>No requirements match your filters.</p>
                         </CardContent>
                     </Card>
                 ) : (
-                    filteredRequirements.map((req) => (
-                        <Card
-                            key={req.requirementId}
-                            className={cn(
-                                'transition-colors h-full flex flex-col',
-                                selectedIds.has(req.requirementId) && 'border-primary'
-                            )}
-                        >
-                            <CardContent className="p-4 flex flex-col h-full gap-2">
-                                <div className="flex items-start justify-between gap-2">
-                                    <div className="flex items-center gap-2 flex-wrap">
-                                        <Badge
-                                            variant={req.standard === 'ASVS' ? 'default' : 'secondary'}
-                                            className="text-[10px] px-1.5 h-5"
-                                        >
-                                            {req.standard}
-                                        </Badge>
-                                        <Badge variant="outline" className="text-[10px] px-1.5 h-5">L{req.level}</Badge>
-                                    </div>
-                                    <Checkbox
-                                        checked={selectedIds.has(req.requirementId)}
-                                        onCheckedChange={() => toggleSelection(req.requirementId)}
-                                        className="mt-0.5"
-                                    />
-                                </div>
-
-                                <code className="text-[10px] text-muted-foreground font-mono bg-muted px-1 rounded w-fit">
-                                    {req.requirementId}
-                                </code>
-
-                                <p className="text-xs line-clamp-4 flex-1" title={req.description}>{req.description}</p>
-
-                                <div className="mt-auto pt-2 space-y-2">
-                                    <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                                        <Shield className="h-3 w-3" />
-                                        <span className="truncate" title={req.category}>{req.category}</span>
-                                    </div>
-
-                                    {req.rationale && (
-                                        <div className="flex items-start gap-1 p-1.5 rounded-md bg-muted/50 text-[10px]">
-                                            <CheckCircle2 className="h-3 w-3 mt-0.5 text-primary shrink-0" />
-                                            <span className="text-muted-foreground line-clamp-2" title={req.rationale}>
-                                                {req.rationale}
-                                            </span>
-                                        </div>
+                    <>
+                        {/* ASVS Section */}
+                        {filteredRequirements.some(r => r.standard === 'ASVS') && (
+                            <div className="space-y-4">
+                                <button
+                                    onClick={() => setAsvsExpanded(!asvsExpanded)}
+                                    className="flex items-center gap-2 w-full text-left group"
+                                >
+                                    {asvsExpanded ? (
+                                        <ChevronDown className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                                    ) : (
+                                        <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
                                     )}
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))
+                                    <h2 className="text-xl font-bold flex items-center gap-3">
+                                        ASVS Requirements
+                                        <Badge variant="default" className="bg-blue-500/10 text-blue-400 border-blue-400/20">
+                                            {filteredRequirements.filter(r => r.standard === 'ASVS').length}
+                                        </Badge>
+                                    </h2>
+                                    <div className="h-px bg-border flex-1 ml-4" />
+                                </button>
+
+                                {asvsExpanded && (
+                                    <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+                                        {filteredRequirements
+                                            .filter((r) => r.standard === 'ASVS')
+                                            .map((req) => (
+                                                <RequirementCard
+                                                    key={req.requirementId}
+                                                    req={req}
+                                                    selectedIds={selectedIds}
+                                                    toggleSelection={toggleSelection}
+                                                />
+                                            ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* SPVS Section */}
+                        {filteredRequirements.some(r => r.standard === 'SPVS') && (
+                            <div className="space-y-4">
+                                <button
+                                    onClick={() => setSpvsExpanded(!spvsExpanded)}
+                                    className="flex items-center gap-2 w-full text-left group"
+                                >
+                                    {spvsExpanded ? (
+                                        <ChevronDown className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                                    ) : (
+                                        <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                                    )}
+                                    <h2 className="text-xl font-bold flex items-center gap-3">
+                                        SPVS Requirements
+                                        <Badge variant="secondary" className="bg-green-500/10 text-green-400 border-green-400/20">
+                                            {filteredRequirements.filter(r => r.standard === 'SPVS').length}
+                                        </Badge>
+                                    </h2>
+                                    <div className="h-px bg-border flex-1 ml-4" />
+                                </button>
+
+                                {spvsExpanded && (
+                                    <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+                                        {filteredRequirements
+                                            .filter((r) => r.standard === 'SPVS')
+                                            .map((req) => (
+                                                <RequirementCard
+                                                    key={req.requirementId}
+                                                    req={req}
+                                                    selectedIds={selectedIds}
+                                                    toggleSelection={toggleSelection}
+                                                />
+                                            ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
 
