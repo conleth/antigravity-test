@@ -72,6 +72,20 @@ function RequirementCard({
 
                 <p className="text-xs line-clamp-4 flex-1" title={req.description}>{req.description}</p>
 
+                <div className="flex flex-wrap gap-1 mt-1">
+                    {req.tags
+                        .filter((tag) => tag.startsWith('role:'))
+                        .map((tag) => (
+                            <Badge
+                                key={tag}
+                                variant="outline"
+                                className="text-[9px] px-1 h-4 bg-muted/30 border-none text-muted-foreground capitalize"
+                            >
+                                {tag.replace('role:', '')}
+                            </Badge>
+                        ))}
+                </div>
+
                 <div className="mt-auto pt-2 space-y-2">
                     <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
                         <Shield className="h-3 w-3" />
@@ -297,6 +311,20 @@ export function ChecklistPage({ viewMode = 'checklist' }: ChecklistPageProps) {
                             {cat}
                         </option>
                     ))}
+                </select>
+
+                {/* Role Filter */}
+                <select
+                    value={filters.role}
+                    onChange={(e) => setFilter('role', e.target.value)}
+                    className="h-10 px-3 rounded-md border border-input bg-background text-sm"
+                >
+                    <option value="all">All Roles</option>
+                    <option value="developer">Developer</option>
+                    <option value="architect">Architect</option>
+                    <option value="devops">DevOps</option>
+                    <option value="security">Security</option>
+                    <option value="qa">QA / Product</option>
                 </select>
 
                 {/* Export Buttons */}

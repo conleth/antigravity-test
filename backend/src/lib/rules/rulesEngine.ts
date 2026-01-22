@@ -23,6 +23,7 @@ import type {
     SPVSRequirement,
     RequirementSelector,
 } from './types.js';
+import { getRolesForRequirement } from './roleMapper.js';
 
 // =============================================================================
 // Predicate Evaluation
@@ -190,7 +191,15 @@ function asvsToShortlisted(
         description: req.original.description,
         rationale,
         level: req.original.level,
-        tags,
+        tags: [
+            ...tags,
+            ...getRolesForRequirement({
+                description: req.original.description,
+                category: req.chapter.name,
+                section: req.section.name,
+                standard: 'ASVS',
+            }).map((r) => `role:${r}`),
+        ],
         category: req.chapter.name,
         section: req.section.name,
     };
@@ -214,7 +223,7 @@ function spvsToShortlisted(
         description: req.req_name, // SPVS uses req_name as description
         rationale,
         level: req.level,
-        tags,
+        tags: [...tags, ...getRolesForRequirement({ ...req, standard: 'SPVS', category: req.category }).map(r => `role:${r}`)],
         category: req.category,
         section: req.subcategory,
     };
