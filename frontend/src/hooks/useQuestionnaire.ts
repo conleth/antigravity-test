@@ -66,19 +66,48 @@ export function useQuestionnaire() {
         });
     }, []);
 
-    const nextStep = useCallback(() => {
-        setState((s) => ({
-            ...s,
-            currentStep: Math.min(s.currentStep + 1, s.questions.length - 1),
-        }));
+    const checkCondition = useCallback((question: Question | undefined, answers: QuestionnaireAnswers): boolean => {
+        if (!question || !question.condition) return true;
+        const { questionId, operator, value } = question.condition;
+        const answer = answers[questionId];
+
+        switch (operator) {
+            case 'equals':
+                return answer === value;
+            case 'notEquals':
+                return answer !== value;
+            case 'in':
+                return Array.isArray(value) && value.includes(answer as string);
+            default:
+                return true;
+        }
     }, []);
 
+    const nextStep = useCallback(() => {
+        setState((s) => {
+            let next = s.currentStep + 1;
+            while (next < s.questions.length && !checkCondition(s.questions[next] as any, s.answers)) {
+                next++;
+            }
+            return {
+                ...s,
+                currentStep: Math.min(next, s.questions.length - 1),
+            };
+        });
+    }, [checkCondition]);
+
     const prevStep = useCallback(() => {
-        setState((s) => ({
-            ...s,
-            currentStep: Math.max(s.currentStep - 1, 0),
-        }));
-    }, []);
+        setState((s) => {
+            let prev = s.currentStep - 1;
+            while (prev > 0 && !checkCondition(s.questions[prev] as any, s.answers)) {
+                prev--;
+            }
+            return {
+                ...s,
+                currentStep: Math.max(prev, 0),
+            };
+        });
+    }, [checkCondition]);
 
     const goToStep = useCallback((step: number) => {
         setState((s) => ({
@@ -121,10 +150,15 @@ export function useQuestionnaire() {
 
     const currentQuestion = state.questions[state.currentStep];
     const currentAnswer = currentQuestion ? state.answers[currentQuestion.id] : undefined;
-    const isLastStep = state.currentStep === state.questions.length - 1;
-    const isFirstStep = state.currentStep === 0;
-    const progress = state.questions.length > 0
-        ? ((state.currentStep + 1) / state.questions.length) * 100
+
+    // Filter questions by condition to calculate real progress and last step
+    const visibleQuestions = state.questions.filter(q => checkCondition(q, state.answers));
+    const currentVisibleIndex = visibleQuestions.indexOf(currentQuestion);
+
+    const isLastStep = currentVisibleIndex === visibleQuestions.length - 1;
+    const isFirstStep = currentVisibleIndex === 0;
+    const progress = visibleQuestions.length > 0
+        ? ((currentVisibleIndex + 1) / visibleQuestions.length) * 100
         : 0;
 
     const canProceed = currentQuestion
@@ -133,6 +167,8 @@ export function useQuestionnaire() {
 
     return {
         ...state,
+        visibleQuestions,
+        currentVisibleIndex,
         currentQuestion,
         currentAnswer,
         isLastStep,

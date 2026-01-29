@@ -70,14 +70,29 @@ const RISK_FACTORS: RiskFactor[] = [
         description: 'Public exposure increases risk',
     },
     {
-        condition: (a) => a.authType === 'oauth' || a.authType === 'sso',
+        condition: (a) => a.complianceTargets && a.complianceTargets.length > 0,
+        levelIncrease: 1,
+        description: 'Active compliance targets increase verification requirements',
+    },
+    {
+        condition: (a) => a.isMultiTenant === true,
+        levelIncrease: 1,
+        description: 'Multi-tenancy requires stronger isolation verification',
+    },
+    {
+        condition: (a) => Array.isArray(a.authType) && (a.authType.includes('oauth') || a.authType.includes('sso')),
         levelIncrease: 0,
         description: 'Token-based auth is already hardened',
     },
     {
-        condition: (a) => a.authType === 'none',
+        condition: (a) => Array.isArray(a.authType) && a.authType.includes('none'),
         levelIncrease: 0,
         description: 'No auth - level depends on data sensitivity',
+    },
+    {
+        condition: (a) => Array.isArray(a.authType) && (a.authType.includes('basic') || a.authType.includes('apikey')),
+        levelIncrease: 1,
+        description: 'Basic/API Key auth requires careful storage and transport protection',
     },
     {
         condition: (a) => a.hostingModel === 'cloud',
@@ -142,7 +157,7 @@ export function processAnswers(
     // Start with defaults
     const result: Record<string, unknown> = {
         appType: 'web',
-        authType: 'session',
+        authType: ['session'],
         dataSensitivity: 'internal',
         internetExposure: 'private',
         hostingModel: 'cloud',
@@ -153,6 +168,10 @@ export function processAnswers(
             hasIaC: false,
             hasSBOM: false,
         },
+        isContainerized: false,
+        isMultiTenant: false,
+        complianceTargets: [],
+        hasLegacySystems: false,
         recommendedLevel: 1,
     };
 

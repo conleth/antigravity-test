@@ -1,12 +1,25 @@
 const API_BASE = '/api';
 
+export interface QuestionOption {
+    value: string;
+    label: string;
+    description?: string;
+}
+
+export interface QuestionCondition {
+    questionId: string;
+    operator: 'equals' | 'notEquals' | 'in';
+    value: any;
+}
+
 export interface Question {
     id: string;
     text: string;
     helpText?: string;
     type: 'single-select' | 'multi-select' | 'boolean' | 'text';
     required: boolean;
-    options?: { value: string; label: string; description?: string }[];
+    options?: QuestionOption[];
+    condition?: QuestionCondition;
     mapsTo: string;
     order: number;
 }
@@ -18,7 +31,7 @@ export interface QuestionsResponse {
 
 export interface DerivedAttributes {
     appType: string;
-    authType: string;
+    authType: string[];
     dataSensitivity: string;
     internetExposure: string;
     hostingModel: string;
@@ -29,6 +42,10 @@ export interface DerivedAttributes {
         hasIaC: boolean;
         hasSBOM: boolean;
     };
+    isContainerized: boolean;
+    isMultiTenant: boolean;
+    complianceTargets: string[];
+    hasLegacySystems: boolean;
     recommendedLevel: 1 | 2 | 3;
 }
 

@@ -51,11 +51,12 @@ export interface ExcludedRequirement {
 // Derived Attributes (computed from questionnaire answers)
 // =============================================================================
 
-export type AppType = 'web' | 'api' | 'mobile' | 'internal';
-export type AuthType = 'none' | 'session' | 'oauth' | 'sso';
+export type AppType = 'web' | 'api' | 'mobile' | 'internal' | 'iot' | 'desktop' | 'serverless';
+export type AuthType = 'none' | 'session' | 'oauth' | 'sso' | 'basic' | 'apikey' | 'saml';
 export type DataSensitivity = 'public' | 'internal' | 'confidential' | 'regulated';
 export type InternetExposure = 'public' | 'private' | 'mixed';
 export type HostingModel = 'onprem' | 'cloud' | 'hybrid';
+export type ComplianceTarget = 'pci' | 'gdpr' | 'soc2' | 'hipaa' | 'nist' | 'iso27001';
 
 export interface PipelineMaturity {
     hasCI: boolean;
@@ -67,11 +68,15 @@ export interface PipelineMaturity {
 
 export interface DerivedAttributes {
     appType: AppType;
-    authType: AuthType;
+    authType: AuthType[];
     dataSensitivity: DataSensitivity;
     internetExposure: InternetExposure;
     hostingModel: HostingModel;
     pipelineMaturity: PipelineMaturity;
+    isContainerized: boolean;
+    isMultiTenant: boolean;
+    complianceTargets: ComplianceTarget[];
+    hasLegacySystems: boolean;
     /** Computed recommended level based on risk factors */
     recommendedLevel: 1 | 2 | 3;
 }

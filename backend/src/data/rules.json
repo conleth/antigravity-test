@@ -405,8 +405,87 @@
                         "V13"
                     ]
                 }
+            }
+        },
+        {
+            "id": "container-security",
+            "description": "Include container-specific security requirements",
+            "predicate": {
+                "type": "attribute",
+                "field": "isContainerized",
+                "operator": "equals",
+                "value": true
             },
-            "priority": 5
+            "affectsStandard": "ASVS",
+            "includes": {
+                "asvs": {
+                    "chapters": [
+                        "V14"
+                    ]
+                }
+            },
+            "priority": 15
+        },
+        {
+            "id": "multi-tenancy-isolation",
+            "description": "Include requirements for multi-tenant data isolation",
+            "predicate": {
+                "type": "attribute",
+                "field": "isMultiTenant",
+                "operator": "equals",
+                "value": true
+            },
+            "affectsStandard": "ASVS",
+            "includes": {
+                "asvs": {
+                    "chapters": [
+                        "V1",
+                        "V4"
+                    ]
+                }
+            },
+            "priority": 15
+        },
+        {
+            "id": "compliance-pci-dss",
+            "description": "Include mandatory controls for PCI-DSS compliance",
+            "predicate": {
+                "type": "attribute",
+                "field": "complianceTargets",
+                "operator": "in",
+                "value": "pci"
+            },
+            "affectsStandard": "both",
+            "includes": {
+                "asvs": {
+                    "chapters": [
+                        "V1",
+                        "V2",
+                        "V3",
+                        "V4",
+                        "V5",
+                        "V6",
+                        "V7",
+                        "V8",
+                        "V9",
+                        "V10",
+                        "V11",
+                        "V12",
+                        "V13",
+                        "V14"
+                    ]
+                },
+                "spvs": {
+                    "chapters": [
+                        "V1",
+                        "V2",
+                        "V3",
+                        "V4",
+                        "V5"
+                    ]
+                }
+            },
+            "priority": 25
         }
     ]
 }

@@ -28,6 +28,21 @@
                     "value": "internal",
                     "label": "Internal Tool",
                     "description": "Internal-only utility or admin tool"
+                },
+                {
+                    "value": "iot",
+                    "label": "IoT / Embedded",
+                    "description": "Physical device or firmware"
+                },
+                {
+                    "value": "desktop",
+                    "label": "Desktop / Electron",
+                    "description": "Native desktop application"
+                },
+                {
+                    "value": "serverless",
+                    "label": "Serverless Function",
+                    "description": "Lambda, Cloud Functions, etc."
                 }
             ],
             "mapsTo": "appType",
@@ -37,13 +52,23 @@
             "id": "auth-type",
             "text": "What authentication method does the application use?",
             "helpText": "Select the primary authentication mechanism.",
-            "type": "single-select",
+            "type": "multi-select",
             "required": true,
             "options": [
                 {
                     "value": "none",
                     "label": "None / Anonymous",
                     "description": "No authentication required"
+                },
+                {
+                    "value": "basic",
+                    "label": "Basic Auth",
+                    "description": "Username/Password (HTTP Basic)"
+                },
+                {
+                    "value": "apikey",
+                    "label": "API Key",
+                    "description": "Static API key/token"
                 },
                 {
                     "value": "session",
@@ -58,7 +83,12 @@
                 {
                     "value": "sso",
                     "label": "Enterprise SSO",
-                    "description": "SAML, Okta, Azure AD, etc."
+                    "description": "Microsoft Entra, Okta, etc."
+                },
+                {
+                    "value": "saml",
+                    "label": "SAML",
+                    "description": "Legacy XML-based federated auth"
                 }
             ],
             "mapsTo": "authType",
@@ -148,13 +178,89 @@
             "order": 5
         },
         {
+            "id": "is-containerized",
+            "text": "Is the application containerized?",
+            "helpText": "Using Docker, Kubernetes, etc. Only relevant for Cloud/Hybrid hosting.",
+            "type": "boolean",
+            "required": true,
+            "condition": {
+                "questionId": "hosting-model",
+                "operator": "in",
+                "value": [
+                    "cloud",
+                    "hybrid"
+                ]
+            },
+            "mapsTo": "isContainerized",
+            "order": 6
+        },
+        {
+            "id": "is-multi-tenant",
+            "text": "Is this a multi-tenant application?",
+            "helpText": "Multiple clients or organizations sharing the same infrastructure/database.",
+            "type": "boolean",
+            "required": true,
+            "mapsTo": "isMultiTenant",
+            "order": 7
+        },
+        {
+            "id": "compliance-targets",
+            "text": "Which compliance frameworks apply to this project?",
+            "helpText": "Multiple selections possible. This will include mandatory controls for these standards.",
+            "type": "multi-select",
+            "required": false,
+            "options": [
+                {
+                    "value": "pci",
+                    "label": "PCI-DSS",
+                    "description": "Payment card industry data security"
+                },
+                {
+                    "value": "gdpr",
+                    "label": "GDPR",
+                    "description": "European data protection"
+                },
+                {
+                    "value": "soc2",
+                    "label": "SOC2",
+                    "description": "Service organization controls"
+                },
+                {
+                    "value": "hipaa",
+                    "label": "HIPAA",
+                    "description": "Healthcare data privacy/security"
+                },
+                {
+                    "value": "nist",
+                    "label": "NIST 800-53",
+                    "description": "US Federal Information Systems"
+                },
+                {
+                    "value": "iso27001",
+                    "label": "ISO 27001",
+                    "description": "International info-sec standard"
+                }
+            ],
+            "mapsTo": "complianceTargets",
+            "order": 8
+        },
+        {
+            "id": "has-legacy-systems",
+            "text": "Does this application integrate with legacy or EOL systems?",
+            "helpText": "Systems that may not support modern security protocols.",
+            "type": "boolean",
+            "required": true,
+            "mapsTo": "hasLegacySystems",
+            "order": 9
+        },
+        {
             "id": "pipeline-ci",
             "text": "Do you have automated CI/CD pipelines?",
             "helpText": "Continuous integration and deployment automation",
             "type": "boolean",
             "required": true,
             "mapsTo": "pipelineMaturity.hasCI",
-            "order": 6
+            "order": 10
         },
         {
             "id": "pipeline-signing",
@@ -163,7 +269,7 @@
             "type": "boolean",
             "required": true,
             "mapsTo": "pipelineMaturity.hasSignedArtifacts",
-            "order": 7
+            "order": 11
         },
         {
             "id": "pipeline-secrets",
@@ -172,7 +278,7 @@
             "type": "boolean",
             "required": true,
             "mapsTo": "pipelineMaturity.hasSecretScanning",
-            "order": 8
+            "order": 12
         },
         {
             "id": "pipeline-iac",
@@ -181,7 +287,7 @@
             "type": "boolean",
             "required": true,
             "mapsTo": "pipelineMaturity.hasIaC",
-            "order": 9
+            "order": 13
         },
         {
             "id": "pipeline-sbom",
@@ -190,7 +296,7 @@
             "type": "boolean",
             "required": true,
             "mapsTo": "pipelineMaturity.hasSBOM",
-            "order": 10
+            "order": 14
         }
     ]
 }
