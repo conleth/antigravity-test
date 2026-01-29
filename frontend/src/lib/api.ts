@@ -119,7 +119,11 @@ async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
 
     if (!response.ok) {
         const error = await response.json().catch(() => ({ error: response.statusText }));
-        throw new Error(error.error || 'API request failed');
+        let errorMessage = error.error || 'API request failed';
+        if (error.details && Array.isArray(error.details)) {
+            errorMessage += `: ${error.details.join(', ')}`;
+        }
+        throw new Error(errorMessage);
     }
 
     return response.json();

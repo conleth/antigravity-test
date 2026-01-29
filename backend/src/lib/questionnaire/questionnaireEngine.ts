@@ -31,6 +31,11 @@ export interface Question {
     options?: QuestionOption[];
     mapsTo: string; // Dot notation path in DerivedAttributes
     order: number;
+    condition?: {
+        questionId: string;
+        operator: 'equals' | 'notEquals' | 'in';
+        value: string | string[] | boolean | number;
+    };
 }
 
 export interface QuestionnaireData {
@@ -70,7 +75,7 @@ const RISK_FACTORS: RiskFactor[] = [
         description: 'Public exposure increases risk',
     },
     {
-        condition: (a) => a.complianceTargets && a.complianceTargets.length > 0,
+        condition: (a) => (a.complianceTargets?.length ?? 0) > 0,
         levelIncrease: 1,
         description: 'Active compliance targets increase verification requirements',
     },
@@ -148,6 +153,30 @@ function setNestedValue(
 }
 
 /**
+ * Check if a question should be shown based on its condition.
+ */
+function checkCondition(question: Question, answers: QuestionnaireAnswers): boolean {
+    if (!question.condition) return true;
+    const { questionId, operator, value } = question.condition;
+    const answer = answers[questionId];
+
+    // If dependency is not answered, condition fails
+    if (answer === undefined) return false;
+
+    switch (operator) {
+        case 'equals':
+            return answer === value;
+        case 'notEquals':
+            return answer !== value;
+        case 'in':
+            // Check if answer is in the allowed values list
+            return Array.isArray(value) && value.includes(answer as string);
+        default:
+            return true;
+    }
+}
+
+/**
  * Process questionnaire answers into derived attributes.
  */
 export function processAnswers(
@@ -177,6 +206,11 @@ export function processAnswers(
 
     // Apply answers
     for (const question of questions) {
+        // Skip if condition not met
+        if (!checkCondition(question, answers)) {
+            continue;
+        }
+
         const answer = answers[question.id];
         if (answer !== undefined) {
             setNestedValue(result, question.mapsTo, answer);
@@ -204,6 +238,11 @@ export function validateAnswers(
     const errors: string[] = [];
 
     for (const question of questions) {
+        // Skip validation if condition not met (question is hidden)
+        if (!checkCondition(question, answers)) {
+            continue;
+        }
+
         if (question.required) {
             const answer = answers[question.id];
             if (answer === undefined || answer === '' || answer === null) {

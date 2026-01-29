@@ -540,5 +540,187 @@
     },
     "createdAt": "2026-01-29T08:23:28.975Z",
     "updatedAt": "2026-01-29T08:23:28.975Z"
+  },
+  {
+    "id": "ad27e296-dc6c-4d47-ba4e-9abcc3fe4d97",
+    "answers": {
+      "app-type": "web",
+      "auth-type": [
+        "oauth"
+      ],
+      "data-sensitivity": "confidential",
+      "internet-exposure": "public",
+      "hosting-model": "cloud",
+      "is-containerized": true,
+      "is-multi-tenant": true,
+      "has-legacy-systems": false,
+      "pipeline-ci": true,
+      "pipeline-signing": false,
+      "pipeline-secrets": true,
+      "pipeline-iac": true,
+      "pipeline-sbom": false
+    },
+    "attributes": {
+      "appType": "web",
+      "authType": [
+        "oauth"
+      ],
+      "dataSensitivity": "confidential",
+      "internetExposure": "public",
+      "hostingModel": "cloud",
+      "pipelineMaturity": {
+        "hasCI": true,
+        "hasSignedArtifacts": false,
+        "hasSecretScanning": true,
+        "hasIaC": true,
+        "hasSBOM": false
+      },
+      "isContainerized": true,
+      "isMultiTenant": true,
+      "complianceTargets": [],
+      "hasLegacySystems": false,
+      "recommendedLevel": 3
+    },
+    "createdAt": "2026-01-29T08:54:11.817Z",
+    "updatedAt": "2026-01-29T08:54:11.817Z"
+  },
+  {
+    "id": "e4228098-afb0-4988-a38b-b8edbcf23ede",
+    "answers": {
+      "app-type": "web",
+      "auth-type": [
+        "basic"
+      ],
+      "data-sensitivity": "internal",
+      "internet-exposure": "public",
+      "hosting-model": "cloud",
+      "is-containerized": true,
+      "is-multi-tenant": false,
+      "compliance-targets": [
+        "gdpr"
+      ],
+      "has-legacy-systems": false,
+      "pipeline-ci": true,
+      "pipeline-signing": true,
+      "pipeline-secrets": true,
+      "pipeline-iac": true,
+      "pipeline-sbom": true
+    },
+    "attributes": {
+      "appType": "web",
+      "authType": [
+        "basic"
+      ],
+      "dataSensitivity": "internal",
+      "internetExposure": "public",
+      "hostingModel": "cloud",
+      "pipelineMaturity": {
+        "hasCI": true,
+        "hasSignedArtifacts": true,
+        "hasSecretScanning": true,
+        "hasIaC": true,
+        "hasSBOM": true
+      },
+      "isContainerized": true,
+      "isMultiTenant": false,
+      "complianceTargets": [
+        "gdpr"
+      ],
+      "hasLegacySystems": false,
+      "recommendedLevel": 3
+    },
+    "createdAt": "2026-01-29T13:13:03.912Z",
+    "updatedAt": "2026-01-29T13:13:03.912Z"
+  },
+  {
+    "id": "505d9bc2-a340-475e-95a0-373a71e0eaad",
+    "answers": {
+      "app-type": "web",
+      "auth-type": [
+        "session"
+      ],
+      "data-sensitivity": "internal",
+      "internet-exposure": "private",
+      "hosting-model": "cloud",
+      "is-containerized": false,
+      "is-multi-tenant": false,
+      "compliance-targets": [],
+      "has-legacy-systems": false,
+      "pipeline-ci": true,
+      "pipeline-signing": false,
+      "pipeline-secrets": true,
+      "pipeline-iac": true,
+      "pipeline-sbom": false
+    },
+    "attributes": {
+      "appType": "web",
+      "authType": [
+        "session"
+      ],
+      "dataSensitivity": "internal",
+      "internetExposure": "private",
+      "hostingModel": "cloud",
+      "pipelineMaturity": {
+        "hasCI": true,
+        "hasSignedArtifacts": false,
+        "hasSecretScanning": true,
+        "hasIaC": true,
+        "hasSBOM": false
+      },
+      "isContainerized": false,
+      "isMultiTenant": false,
+      "complianceTargets": [],
+      "hasLegacySystems": false,
+      "recommendedLevel": 1
+    },
+    "createdAt": "2026-01-29T15:26:42.616Z",
+    "updatedAt": "2026-01-29T15:26:42.616Z"
+  },
+  {
+    "id": "fd7b71db-cb9a-485d-9b74-d89e720f1649",
+    "answers": {
+      "app-type": "web",
+      "auth-type": [
+        "none"
+      ],
+      "data-sensitivity": "public",
+      "internet-exposure": "public",
+      "hosting-model": "onprem",
+      "is-multi-tenant": false,
+      "compliance-targets": [
+        "pci"
+      ],
+      "has-legacy-systems": false,
+      "pipeline-ci": false,
+      "pipeline-signing": false,
+      "pipeline-secrets": false,
+      "pipeline-iac": false,
+      "pipeline-sbom": false
+    },
+    "attributes": {
+      "appType": "web",
+      "authType": [
+        "none"
+      ],
+      "dataSensitivity": "public",
+      "internetExposure": "public",
+      "hostingModel": "onprem",
+      "pipelineMaturity": {
+        "hasCI": false,
+        "hasSignedArtifacts": false,
+        "hasSecretScanning": false,
+        "hasIaC": false,
+        "hasSBOM": false
+      },
+      "isContainerized": false,
+      "isMultiTenant": false,
+      "complianceTargets": [
+        "pci"
+      ],
+      "hasLegacySystems": false,
+      "recommendedLevel": 3
+    },
+    "createdAt": "2026-01-29T20:17:48.906Z",
+    "updatedAt": "2026-01-29T20:17:48.906Z"
   }
 ]

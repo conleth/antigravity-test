@@ -160,10 +160,13 @@ export function QuestionnairePage() {
                         <ChevronLeft className="h-4 w-4 mr-2" />
                         Back to Questions
                     </Button>
-                    <Button onClick={handleSubmit} disabled={isSubmitting} size="lg" className="px-8 shadow-lg shadow-primary/20">
-                        {isSubmitting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Check className="h-4 w-4 mr-2" />}
-                        Generate Checklist
-                    </Button>
+                    <div className="flex flex-col items-end gap-2">
+                        {error && <p className="text-sm text-destructive">{error}</p>}
+                        <Button onClick={handleSubmit} disabled={isSubmitting} size="lg" className="px-8 shadow-lg shadow-primary/20">
+                            {isSubmitting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Check className="h-4 w-4 mr-2" />}
+                            Generate Checklist
+                        </Button>
+                    </div>
                 </div>
             </div>
         );
@@ -201,6 +204,27 @@ export function QuestionnairePage() {
             {/* Question Card */}
             <Card className="shadow-xl shadow-primary/5 border-none ring-1 ring-input animate-in slide-in-from-bottom-4 duration-500">
                 <CardHeader className="pb-4">
+                    <div className="flex justify-between items-center mb-4 border-b pb-4">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={prevStep}
+                            disabled={isFirstStep}
+                            className="text-muted-foreground"
+                        >
+                            <ChevronLeft className="h-4 w-4 mr-1" />
+                            Prev
+                        </Button>
+                        <Button
+                            onClick={handleNext}
+                            disabled={!canProceed}
+                            size="sm"
+                            className="px-4"
+                        >
+                            {isLastStep ? 'Review' : 'Next'}
+                            {!isLastStep && <ChevronRight className="h-4 w-4 ml-1" />}
+                        </Button>
+                    </div>
                     <div className="flex items-center gap-2 mb-2">
                         <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary uppercase tracking-wider">
                             {currentQuestion.id.split('-')[0]}

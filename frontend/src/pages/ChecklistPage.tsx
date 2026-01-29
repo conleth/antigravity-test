@@ -212,23 +212,50 @@ export function ChecklistPage({ viewMode = 'checklist' }: ChecklistPageProps) {
                         </CardTitle>
                     </CardHeader>
                 </Card>
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardDescription>SPVS (Visible)</CardDescription>
-                        <CardTitle className="text-3xl text-green-400">
-                            {spvsCount}
-                        </CardTitle>
-                    </CardHeader>
-                </Card>
-                <Card>
+                <Card className="md:col-span-1">
                     <CardHeader className="pb-2">
                         <CardDescription>Recommended Level</CardDescription>
                         <CardTitle className="text-3xl">
                             L{data.attributes.recommendedLevel}
                         </CardTitle>
+                        <p className="text-xs text-muted-foreground mt-1">
+                            Based on {data.attributes.dataSensitivity} data
+                        </p>
                     </CardHeader>
                 </Card>
             </div>
+
+            {/* Profile Context */}
+            <Card className="bg-muted/30 border-dashed">
+                <CardContent className="py-4 flex flex-wrap gap-4 text-sm">
+                    <div className="flex items-center gap-2">
+                        <span className="font-semibold text-muted-foreground">App Type:</span>
+                        <Badge variant="outline" className="capitalize">{data.attributes.appType}</Badge>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span className="font-semibold text-muted-foreground">Auth:</span>
+                        <div className="flex gap-1">
+                            {(Array.isArray(data.attributes.authType) ? data.attributes.authType : [data.attributes.authType]).map((a: string) => (
+                                <Badge key={a} variant="outline" className="capitalize">{a}</Badge>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span className="font-semibold text-muted-foreground">Exposure:</span>
+                        <Badge variant="outline" className="capitalize">{data.attributes.internetExposure}</Badge>
+                    </div>
+                    {data.attributes.complianceTargets?.length > 0 && (
+                        <div className="flex items-center gap-2">
+                            <span className="font-semibold text-muted-foreground">Compliance:</span>
+                            <div className="flex gap-1">
+                                {data.attributes.complianceTargets.map((c: string) => (
+                                    <Badge key={c} variant="default" className="text-[10px] uppercase">{c}</Badge>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
 
             {/* Save Selection Action */}
             <div className="flex justify-end">

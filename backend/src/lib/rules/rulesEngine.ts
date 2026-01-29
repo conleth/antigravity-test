@@ -56,7 +56,7 @@ export function evaluatePredicate(
                 return attrValue !== predicate.value;
             }
             if (predicate.operator === 'in') {
-                return Array.isArray(predicate.value) && predicate.value.includes(attrValue);
+                return Array.isArray(predicate.value) && predicate.value.includes(String(attrValue));
             }
             return false;
         }
